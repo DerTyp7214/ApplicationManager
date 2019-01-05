@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019.
+  ~ Created by Josua Lengwenath
+  -->
+
+<resources>
+    <item name="noConnection" type="id"/>
+    <item name="toolbar" type="id"/>
+</resources>

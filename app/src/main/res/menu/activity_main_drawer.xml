@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019.
+  ~ Created by Josua Lengwenath
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:showIn="navigation_view">
+    <group
+            android:checkableBehavior="single"
+            android:id="@+id/menu_group_main">
+        <item
+                android:id="@+id/nav_home"
+                android:checked="true"
+                android:icon="@drawable/ic_home_black_24dp"
+                android:title="@string/menu_home"/>
+    </group>
+    <group
+            android:checkableBehavior="single"
+            android:id="@+id/menu_group_downloads">
+        <item
+                android:id="@+id/nav_installed"
+                android:icon="@drawable/ic_extension_black_24dp"
+                android:title="@string/menu_installed"/>
+        <item
+                android:id="@+id/nav_repos"
+                android:icon="@drawable/ic_cloud_download_black_24dp"
+                android:title="@string/menu_downloads"/>
+    </group>
+    <group
+            android:checkableBehavior="none"
+            android:id="@+id/menu_group_settings">
+        <item
+                android:id="@+id/nav_log"
+                android:icon="@drawable/ic_bug_report_black_24dp"
+                android:title="@string/menu_log"/>
+        <item
+                android:id="@+id/nav_settings"
+                android:icon="@drawable/ic_settings_black_24dp"
+                android:title="@string/menu_settings"/>
+    </group>
+    <group
+            android:checkableBehavior="none"
+            android:id="@+id/menu_group_dev">
+        <item
+                android:id="@+id/nav_about"
+                android:icon="@drawable/ic_info_outline_black_24dp"
+                android:title="@string/menu_about"/>
+    </group>
+</menu>

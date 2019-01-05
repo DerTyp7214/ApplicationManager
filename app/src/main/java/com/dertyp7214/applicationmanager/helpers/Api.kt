@@ -1,12 +1,18 @@
-package com.dertyp7214.applicationmanager
+/*
+ * Copyright (c) 2019.
+ * Created by Josua Lengwenath
+ */
+
+package com.dertyp7214.applicationmanager.helpers
 
 import android.content.Context
-import com.dertyp7214.applicationmanager.Config.API_KEY
-import com.dertyp7214.applicationmanager.github.Application
 import com.dertyp7214.applicationmanager.github.Release
 import com.dertyp7214.applicationmanager.github.Repo
+import com.dertyp7214.applicationmanager.helpers.Config.API_KEY
 import com.dertyp7214.applicationmanager.helpers.Network.Companion.getJSONObject
 import com.dertyp7214.applicationmanager.helpers.Network.Companion.getWebContent
+import com.dertyp7214.applicationmanager.props.Application
+import com.dertyp7214.applicationmanager.props.RepoProp
 import org.commonmark.parser.Parser
 import org.commonmark.renderer.html.HtmlRenderer
 import org.json.JSONArray
@@ -95,14 +101,27 @@ class Api(private val context: Context) {
         val readJson = ReadJSON(url).readArray()
         return if (readJson.second) {
             val list = ArrayList<Repo>()
+            //val threads = ArrayList<Thread>()
             readJson.first.forEach { any, i ->
+                //val thread = Thread {
                 val obj = any as JSONObject
                 val repo = parseRepo(obj)
-                if (repo.name != "application-repo.github.io" && (repo.name.contains(query, true) || query.isEmpty())) {
+                if (repo.name != "application-repo.github.io" && (repo.name.contains(
+                        query,
+                        true
+                    ) || query.isEmpty())
+                ) {
                     list.add(repo)
                 }
+                /*}
+                thread.start()
+                threads.add(thread)
+                Thread.sleep(100)*/
             }
-            list
+            //while (threads.count { it.isAlive } != 0);
+            list.sortedWith(kotlin.Comparator { o1, o2 ->
+                o1.name.compareTo(o2.name, true)
+            })
         } else {
             Arrays.asList(Repo.empty)
         }
@@ -110,22 +129,35 @@ class Api(private val context: Context) {
 
     fun loadApplications(repos: List<Repo>): List<Application> {
         return repos.map {
-            val parser = Parser.builder().build()
             val renderer = HtmlRenderer.builder().build()
+            val parser = Parser.builder().build()
             val release = releases(it, true).first()
             val id = it.id
             val name = it.name
             val version = release.tag_name
-            val packageName = it.homepage.replace("https://application-repo.github.io?id=", "")
+            val author = it.repoProp.author
+            val packageName = it.repoProp.id
             val description = renderer.render(
                 parser.parse(
                     getWebContent("https://raw.githubusercontent.com/$username/${it.name}/${if (it.description.isEmpty()) "master" else it.description}/README.md")
                 )
             )
+            val descriptionShort = it.repoProp.description
             val latestChanges = renderer.render(parser.parse(release.body))
             val latestApk = release.asset
             val latestUpdate = it.parsedUpdatedAt()
-            Application(id, name, version, packageName, description, latestChanges, latestApk, latestUpdate)
+            Application(
+                id,
+                name,
+                author,
+                version,
+                packageName,
+                description,
+                descriptionShort,
+                latestChanges,
+                latestApk,
+                latestUpdate
+            )
         }
     }
 
@@ -161,7 +193,11 @@ class Api(private val context: Context) {
         val prerelease = obj.getBoolean("prerelease")
         val publishedAt = obj.getString("published_at")
         val asset =
-            SafeJSONObject(SafeJSONArray(obj.getJSONArray("assets")).getJSONObject(0)).getString("browser_download_url")
+            SafeJSONObject(
+                SafeJSONArray(
+                    obj.getJSONArray("assets")
+                ).getJSONObject(0)
+            ).getString("browser_download_url")
         val body = obj.getString("body")
         return Release(
             id,
@@ -187,6 +223,8 @@ class Api(private val context: Context) {
         val url = safeObj.getString("url")
         val updatedAt = safeObj.getString("updated_at")
         val homepage = safeObj.getString("homepage")
-        return Repo(id, nodeId, name, fullName, description, url, updatedAt, homepage)
+        val repoProp =
+            RepoProp(getWebContent("https://raw.githubusercontent.com/$username/$name/${if (description.isEmpty()) "master" else description}/repo.prop"))
+        return Repo(repoProp, id, nodeId, name, fullName, description, url, updatedAt, homepage)
     }
 }
