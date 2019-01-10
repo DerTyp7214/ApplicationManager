@@ -18,10 +18,10 @@ import androidx.core.content.edit
 import com.dertyp7214.applicationmanager.helpers.Network
 import com.dertyp7214.applicationmanager.screens.MainActivity
 import com.dertyp7214.applicationmanager.screens.Splash
+import com.dertyp7214.logs.helpers.Logger
 import com.downloader.PRDownloader
 import com.downloader.PRDownloaderConfig
 import com.fede987.statusbaralert.StatusBarAlert
-
 
 class App : Application() {
 
@@ -38,7 +38,9 @@ class App : Application() {
             .setDatabaseEnabled(true)
             .build()
         context = applicationContext
+        Logger.init(this)
         PRDownloader.initialize(applicationContext, config)
+
         registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
                 context = activity

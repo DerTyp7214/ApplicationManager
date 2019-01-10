@@ -149,8 +149,8 @@ class Api(private val context: Context) {
             Application(
                 id,
                 name,
-                author,
                 version,
+                author,
                 packageName,
                 description,
                 descriptionShort,

@@ -28,8 +28,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dertyp7214.applicationmanager.R
 import com.dertyp7214.applicationmanager.helpers.Network
 import com.dertyp7214.applicationmanager.helpers.Packages
-import com.dertyp7214.applicationmanager.helpers.Ui
 import com.dertyp7214.applicationmanager.props.Application
+import com.dertyp7214.logs.helpers.Ui
 import ru.noties.markwon.Markwon
 import ru.noties.markwon.SpannableConfiguration
 import ru.noties.markwon.il.AsyncDrawableLoader
@@ -60,7 +60,7 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
         activity.windowManager.defaultDisplay.getSize(size)
         val width = size.x
 
-        holder.title.text = application.name
+        holder.title.text = "${application.name} ${application.version}"
         holder.description.text = application.descriptionShort
         holder.download
             .setImageDrawable(activity.getDrawable(if (darkMode) R.drawable.ic_file_download_white_24dp else R.drawable.ic_file_download_black_24dp))
@@ -82,8 +82,8 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
                         application.latestApk,
                         path,
                         "${application.name}-${application.version}.apk",
-                        {
-                            progressDialog.setMessage("${activity.getString(R.string.download)} ${application.name}($it%)")
+                        { progress ->
+                            progressDialog.setMessage("${activity.getString(R.string.download)} ${application.name}($progress%)")
                         },
                         { file: File, b: Boolean ->
                             progressDialog.dismiss()

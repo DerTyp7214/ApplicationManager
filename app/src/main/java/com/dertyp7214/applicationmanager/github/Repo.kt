@@ -6,8 +6,8 @@
 package com.dertyp7214.applicationmanager.github
 
 import android.annotation.SuppressLint
-import com.dertyp7214.applicationmanager.helpers.Logs
 import com.dertyp7214.applicationmanager.props.RepoProp
+import com.dertyp7214.logs.helpers.Logger
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -32,7 +32,7 @@ class Repo(
             val format = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX")
             format.parse(updated_at)
         } catch (e: Exception) {
-            Logs.log(Logs.Companion.Type.ERROR, "updated_at", e.message)
+            Logger.log(Logger.Companion.Type.ERROR, "updated_at", e.message)
             Date()
         }
     }

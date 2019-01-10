@@ -10,6 +10,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import androidx.core.content.FileProvider
+import com.dertyp7214.logs.helpers.Logger
 import java.io.File
 import java.util.regex.Pattern
 
@@ -42,7 +43,7 @@ class Packages {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Logs.log(Logs.Companion.Type.ERROR, "install", e.message)
+                Logger.log(Logger.Companion.Type.ERROR, "install", e.message)
             }
         }
 

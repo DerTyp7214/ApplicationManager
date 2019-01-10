@@ -22,7 +22,11 @@ import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.dertyp7214.applicationmanager.BuildConfig
 import com.dertyp7214.applicationmanager.R
-import com.dertyp7214.applicationmanager.helpers.*
+import com.dertyp7214.applicationmanager.helpers.Comparators
+import com.dertyp7214.applicationmanager.helpers.Config
+import com.dertyp7214.applicationmanager.helpers.Network
+import com.dertyp7214.applicationmanager.helpers.Packages
+import com.dertyp7214.logs.helpers.Logger
 import org.json.JSONObject
 import java.io.File
 
@@ -82,8 +86,8 @@ class Home() : Fragment() {
                 txtLatestVersion.text = "${getString(R.string.latestVersion)}: $version"
                 refreshLayout.isRefreshing = false
                 val update = Comparators.compareVersion(version, BuildConfig.VERSION_NAME) == 1
-                Logs.log(
-                    Logs.Companion.Type.DEBUG,
+                Logger.log(
+                    Logger.Companion.Type.DEBUG,
                     "loadVersion",
                     "latestVersion: $version, currentVersion: ${BuildConfig.VERSION_NAME}, update: $update"
                 )

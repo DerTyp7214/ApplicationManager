@@ -5,6 +5,8 @@
 
 package com.dertyp7214.applicationmanager.helpers
 
+import android.util.Log
+import com.dertyp7214.logs.helpers.Logger
 import com.downloader.Error
 import com.downloader.OnDownloadListener
 import com.downloader.PRDownloader
@@ -21,8 +23,8 @@ class Network {
     companion object {
         var disabled = false
         fun getWebContent(url: String, startTime: Long = System.currentTimeMillis()): String {
-            Logs.log(
-                Logs.Companion.Type.DEBUG,
+            Logger.log(
+                Logger.Companion.Type.DEBUG,
                 "getWebContent",
                 "url: $url, startTime: ${System.currentTimeMillis() - startTime}"
             )
@@ -44,14 +46,14 @@ class Network {
                 Thread.sleep(100)
                 return getWebContent(url, startTime)
             } catch (e: Exception) {
-                Logs.log(Logs.Companion.Type.ERROR, "getWebContent", e.message)
+                Logger.log(Logger.Companion.Type.ERROR, "getWebContent", Log.getStackTraceString(e))
                 ""
             }
         }
 
         fun getJSONObject(url: String, api_key: String = "", startTime: Long = System.currentTimeMillis()): String {
-            Logs.log(
-                Logs.Companion.Type.DEBUG,
+            Logger.log(
+                Logger.Companion.Type.DEBUG,
                 "getJSONObject",
                 "url: $url, startTime: ${System.currentTimeMillis() - startTime}"
             )
@@ -91,7 +93,7 @@ class Network {
                 return getJSONObject(url, api_key, startTime)
             } catch (e: Exception) {
                 e.printStackTrace()
-                Logs.log(Logs.Companion.Type.ERROR, "getJSONObject", e.message)
+                Logger.log(Logger.Companion.Type.ERROR, "getJSONObject", Log.getStackTraceString(e))
                 "{\"message\": \"Something went wrong.\"}"
             }
         }
@@ -117,8 +119,8 @@ class Network {
                     }
 
                     override fun onError(error: Error?) {
-                        Logs.log(
-                            Logs.Companion.Type.ERROR,
+                        Logger.log(
+                            Logger.Companion.Type.ERROR,
                             "Network",
                             Pair(error?.isServerError, error?.isConnectionError)
                         )
