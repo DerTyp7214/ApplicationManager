@@ -105,6 +105,11 @@ class Network {
             onProgress: (progress: Int) -> Unit,
             onFinish: (file: File, error: Boolean) -> Unit
         ) {
+            Logger.log(
+                Logger.Companion.Type.DEBUG,
+                "downloadFile",
+                "url: $url, path: ${path.absolutePath}, filename: $filename"
+            )
             PRDownloader.download(url, path.absolutePath, filename)
                 .build()
                 .setOnProgressListener {

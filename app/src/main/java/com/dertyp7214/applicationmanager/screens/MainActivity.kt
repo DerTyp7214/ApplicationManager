@@ -8,6 +8,7 @@ package com.dertyp7214.applicationmanager.screens
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.os.Environment
 import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
@@ -25,6 +26,7 @@ import com.dertyp7214.applicationmanager.fragments.Repos
 import com.dertyp7214.logs.fragments.Logs
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.app_bar_main.*
+import java.io.File
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
@@ -48,6 +50,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navView.setNavigationItemSelectedListener(this)
 
         toolbarElevation = toolbar.elevation
+
+        val path = File(Environment.getExternalStorageDirectory(), ".application_manager")
+        path.deleteRecursively()
+        path.mkdirs()
 
         setFragment(Home(this), R.id.nav_home)
         title = getString(R.string.home)
