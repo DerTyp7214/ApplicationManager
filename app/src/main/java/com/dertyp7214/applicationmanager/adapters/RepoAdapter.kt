@@ -44,12 +44,21 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RepoAdapter.ViewHolder {
-        val v = LayoutInflater.from(activity).inflate(R.layout.repo_item, parent, false)
-
-        return ViewHolder(v)
+        return when (viewType) {
+            0 -> {
+                ViewHolder(LayoutInflater.from(activity).inflate(R.layout.divider_item, parent, false))
+            }
+            else -> {
+                ViewHolderRepo(LayoutInflater.from(activity).inflate(R.layout.repo_item, parent, false))
+            }
+        }
     }
 
     override fun getItemCount(): Int = apps.size
+
+    override fun getItemViewType(position: Int): Int {
+        return if (apps[position].divider) 0 else 1
+    }
 
     @SuppressLint("SetTextI18n", "RtlHardcoded")
     override fun onBindViewHolder(holder: RepoAdapter.ViewHolder, position: Int) {
@@ -60,70 +69,75 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
         activity.windowManager.defaultDisplay.getSize(size)
         val width = size.x
 
-        holder.title.text = "${application.name} ${application.version}"
-        holder.description.text = application.descriptionShort
-        holder.download
-            .setImageDrawable(activity.getDrawable(if (darkMode) R.drawable.ic_file_download_white_24dp else R.drawable.ic_file_download_black_24dp))
+        if (holder !is ViewHolderRepo) {
+            holder.title.text = application.name.toUpperCase()
+        } else {
+            holder.title.text = "${application.name} ${application.version}"
+            holder.update.text = "${activity.getString(R.string.update_on)}: ${application.latestUpdate}"
+            holder.description.text = application.descriptionShort
+            holder.download
+                .setImageDrawable(activity.getDrawable(if (darkMode) R.drawable.ic_file_download_white_24dp else R.drawable.ic_file_download_black_24dp))
 
-        holder.download.setOnClickListener {
-            val dialog = AlertDialog.Builder(activity)
-                .setTitle("Install ${application.name}")
-                .setMessage("Do you want to install '${application.name}' now?")
-                .setPositiveButton(R.string.install) { dialog: DialogInterface, _: Int ->
-                    val path = File(Environment.getExternalStorageDirectory(), ".application_manager")
-                    if (!path.exists()) path.mkdirs()
-                    val progressDialog =
-                        ProgressDialog.show(
-                            activity,
-                            "",
-                            "${activity.getString(R.string.download)} ${application.name}(0%)"
-                        )
-                    Network.downloadFile(
-                        application.latestApk,
-                        path,
-                        "${application.name}-${application.version}.apk",
-                        { progress ->
-                            progressDialog.setMessage("${activity.getString(R.string.download)} ${application.name}($progress%)")
-                        },
-                        { file: File, b: Boolean ->
-                            progressDialog.dismiss()
-                            if (!b)
-                                Packages.install(activity, file)
-                            else
-                                Toast.makeText(
-                                    activity,
-                                    activity.getString(R.string.error_apk),
-                                    Toast.LENGTH_LONG
-                                ).show()
-                        })
-                    dialog.dismiss()
-                }
-                .setNeutralButton(R.string.download) { dialog: DialogInterface, _: Int ->
-                    dialog.dismiss()
-                }
-                .create()
-            dialog.show()
-            dialog.window?.decorView?.layoutParams?.width = (width * 0.85F).toInt()
-            dialog.window
-                ?.setBackgroundDrawable(ColorDrawable(Ui.getAttrColor(activity, android.R.attr.windowBackground)))
-        }
-        holder.layout.setOnClickListener {
-            val config = SpannableConfiguration.builder(activity)
-                .asyncDrawableLoader(AsyncDrawableLoader.create())
-                .build()
-            val text = TextView(activity)
-            text.setPadding(dpToPixel(10F).toInt())
-            text.setLineSpacing(0F, 1.2F)
-            Log.d("MARKDOWN", application.description)
-            Markwon.setMarkdown(text, config, application.description)
-            val dialog = AlertDialog.Builder(activity)
-                .setPositiveButton(activity.getString(android.R.string.ok)) { dialog, _ -> dialog.dismiss() }
-                .setView(text)
-                .create()
-            dialog.show()
-            dialog.window?.decorView?.layoutParams?.width = (width * 0.85F).toInt()
-            dialog.window
-                ?.setBackgroundDrawable(ColorDrawable(Ui.getAttrColor(activity, android.R.attr.windowBackground)))
+            holder.download.setOnClickListener {
+                val dialog = AlertDialog.Builder(activity)
+                    .setTitle("Install ${application.name}")
+                    .setMessage("Do you want to install '${application.name}' now?")
+                    .setPositiveButton(R.string.install) { dialog: DialogInterface, _: Int ->
+                        val path = File(Environment.getExternalStorageDirectory(), ".application_manager")
+                        if (!path.exists()) path.mkdirs()
+                        val progressDialog =
+                            ProgressDialog.show(
+                                activity,
+                                "",
+                                "${activity.getString(R.string.download)} ${application.name}(0%)"
+                            )
+                        Network.downloadFile(
+                            application.latestApk,
+                            path,
+                            "${application.name}-${application.version}.apk",
+                            { progress ->
+                                progressDialog.setMessage("${activity.getString(R.string.download)} ${application.name}($progress%)")
+                            },
+                            { file: File, b: Boolean ->
+                                progressDialog.dismiss()
+                                if (!b)
+                                    Packages.install(activity, file)
+                                else
+                                    Toast.makeText(
+                                        activity,
+                                        activity.getString(R.string.error_apk),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                            })
+                        dialog.dismiss()
+                    }
+                    .setNeutralButton(R.string.download) { dialog: DialogInterface, _: Int ->
+                        dialog.dismiss()
+                    }
+                    .create()
+                dialog.show()
+                dialog.window?.decorView?.layoutParams?.width = (width * 0.85F).toInt()
+                dialog.window
+                    ?.setBackgroundDrawable(ColorDrawable(Ui.getAttrColor(activity, android.R.attr.windowBackground)))
+            }
+            holder.layout.setOnClickListener {
+                val config = SpannableConfiguration.builder(activity)
+                    .asyncDrawableLoader(AsyncDrawableLoader.create())
+                    .build()
+                val text = TextView(activity)
+                text.setPadding(dpToPixel(10F).toInt())
+                text.setLineSpacing(0F, 1.2F)
+                Log.d("MARKDOWN", application.description)
+                Markwon.setMarkdown(text, config, application.description)
+                val dialog = AlertDialog.Builder(activity)
+                    .setPositiveButton(activity.getString(android.R.string.ok)) { dialog, _ -> dialog.dismiss() }
+                    .setView(text)
+                    .create()
+                dialog.show()
+                dialog.window?.decorView?.layoutParams?.width = (width * 0.85F).toInt()
+                dialog.window
+                    ?.setBackgroundDrawable(ColorDrawable(Ui.getAttrColor(activity, android.R.attr.windowBackground)))
+            }
         }
     }
 
@@ -135,8 +149,12 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
         return px / (activity.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
     }
 
-    class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
+    open class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
         val title: TextView = v.findViewById(R.id.txt_title)
+    }
+
+    class ViewHolderRepo(v: View) : ViewHolder(v) {
+        val update: TextView = v.findViewById(R.id.txt_update)
         val description: TextView = v.findViewById(R.id.txt_description)
         val download: ImageView = v.findViewById(R.id.download)
         val layout: ViewGroup = v.findViewById(R.id.layout)

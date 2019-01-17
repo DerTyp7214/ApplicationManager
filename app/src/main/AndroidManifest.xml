@@ -24,8 +24,9 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme.Launch"
             tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name="com.dertyp7214.logs.helpers.CrashReportDialog">
-        </activity>
+        <activity
+                android:name="com.dertyp7214.logs.helpers.CrashReportDialog"
+                android:theme="@style/Wallpaper" />
         <activity
                 android:name=".screens.MainActivity"
                 android:label="@string/title_activity_main"

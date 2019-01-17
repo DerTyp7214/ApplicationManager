@@ -10,6 +10,7 @@ import android.app.Activity
 import android.app.ProgressDialog
 import android.os.Bundle
 import android.os.Environment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -75,45 +76,53 @@ class Home() : Fragment() {
     private fun loadVersion(refreshing: Boolean = false) {
         txtLatestVersion.text = "${getString(R.string.latestVersion)}: ${getString(R.string.loading)}..."
 
-        Thread {
-            if (release.isEmpty() || refreshing)
-                release = Network.getJSONObject(url, Config.API_KEY)
-            val json = JSONObject(release)
-            val version = json.getString("tag_name")
-            val apk = json.getJSONArray("assets")?.getJSONObject(0)?.getString("browser_download_url")
+        try {
+            Thread {
+                if (release.isEmpty() || refreshing)
+                    release = Network.getJSONObject(url, Config.API_KEY)
+                val json = JSONObject(release)
+                val version = json.getString("tag_name")
+                val apk = json.getJSONArray("assets")?.getJSONObject(0)?.getString("browser_download_url")
 
-            activity.runOnUiThread {
-                txtLatestVersion.text = "${getString(R.string.latestVersion)}: $version"
-                refreshLayout.isRefreshing = false
-                val update = Comparators.compareVersion(version, BuildConfig.VERSION_NAME) == 1
-                Logger.log(
-                    Logger.Companion.Type.DEBUG,
-                    "loadVersion",
-                    "latestVersion: $version, currentVersion: ${BuildConfig.VERSION_NAME}, update: $update"
-                )
-                if (update && apk != null) {
-                    txtUpdate.text = "${getString(R.string.update)} ${getString(R.string.app_name)}($version)"
-                    cardUpdate.visibility = View.VISIBLE
-                    layoutUpdate.setOnClickListener {
-                        val path = File(Environment.getExternalStorageDirectory(), ".application_manager")
-                        if (!path.exists()) path.mkdirs()
-                        val progressDialog =
-                            ProgressDialog.show(activity, "", "${getString(R.string.download_update)}(0%)")
-                        Network.downloadFile(apk, path,
-                            "${getString(R.string.app_name).toLowerCase().replace(" ", "_")}-" +
-                                    "${version.replace(".", "_")}.apk", { progress ->
-                                progressDialog.setMessage("${getString(R.string.download_update)}($progress%)")
-                            }, { file, success ->
-                                progressDialog.dismiss()
-                                if (!success)
-                                    Packages.install(activity, file)
-                                else
-                                    Toast.makeText(activity, getString(R.string.error_apk), Toast.LENGTH_LONG).show()
-                            })
-                    }
-                } else
-                    cardUpdate.visibility = GONE
-            }
-        }.start()
+                activity.runOnUiThread {
+                    txtLatestVersion.text = "${getString(R.string.latestVersion)}: $version"
+                    refreshLayout.isRefreshing = false
+                    val update = Comparators.compareVersion(version, BuildConfig.VERSION_NAME) == 1
+                    Logger.log(
+                        Logger.Companion.Type.DEBUG,
+                        "loadVersion",
+                        "latestVersion: $version, currentVersion: ${BuildConfig.VERSION_NAME}, update: $update"
+                    )
+                    if (update && apk != null) {
+                        txtUpdate.text = "${getString(R.string.update)} ${getString(R.string.app_name)}($version)"
+                        cardUpdate.visibility = View.VISIBLE
+                        layoutUpdate.setOnClickListener {
+                            val path = File(Environment.getExternalStorageDirectory(), ".application_manager")
+                            if (!path.exists()) path.mkdirs()
+                            val progressDialog =
+                                ProgressDialog.show(activity, "", "${getString(R.string.download_update)}(0%)")
+                            Network.downloadFile(apk, path,
+                                "${getString(R.string.app_name).toLowerCase().replace(" ", "_")}-" +
+                                        "${version.replace(".", "_")}.apk", { progress ->
+                                    progressDialog.setMessage("${getString(R.string.download_update)}($progress%)")
+                                }, { file, success ->
+                                    progressDialog.dismiss()
+                                    if (!success)
+                                        Packages.install(activity, file)
+                                    else
+                                        Toast.makeText(
+                                            activity,
+                                            getString(R.string.error_apk),
+                                            Toast.LENGTH_LONG
+                                        ).show()
+                                })
+                        }
+                    } else
+                        cardUpdate.visibility = GONE
+                }
+            }.start()
+        } catch (e: Exception) {
+            Logger.log(Logger.Companion.Type.ERROR, "loadVersion", Log.getStackTraceString(e))
+        }
     }
 }

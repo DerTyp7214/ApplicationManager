@@ -13,6 +13,12 @@ import androidx.core.content.FileProvider
 import com.dertyp7214.logs.helpers.Logger
 import java.io.File
 import java.util.regex.Pattern
+import android.content.pm.PackageManager
+import android.content.pm.PackageInfo
+
+
+
+
 
 class Packages {
     companion object {
@@ -53,6 +59,20 @@ class Packages {
                 context.applicationContext
                     .packageName + ".GenericFileProvider", file
             )
+        }
+
+        fun isPackageInstalled(packageName: String, packageManager: PackageManager): Boolean {
+            return try {
+                packageManager.getPackageInfo(packageName, 0)
+                true
+            } catch (e: PackageManager.NameNotFoundException) {
+                false
+            }
+        }
+
+        fun getVersion(packageName: String, packageManager: PackageManager): String {
+            val packageInfo: PackageInfo? = packageManager.getPackageInfo(packageName, 0)
+            return packageInfo?.versionName ?: "1.0"
         }
     }
 }

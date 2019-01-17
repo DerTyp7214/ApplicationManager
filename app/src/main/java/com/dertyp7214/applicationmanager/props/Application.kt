@@ -15,7 +15,8 @@ class Application(
     val descriptionShort: String,
     val latestChanges: String,
     val latestApk: String,
-    val latestUpdate: String
+    val latestUpdate: String,
+    val divider: Boolean = false
 ) {
     override fun toString(): String {
         return "id: $id\t" +
@@ -28,5 +29,11 @@ class Application(
                 "latestChanges: $latestChanges\t" +
                 "latestApk: $latestApk\t" +
                 "latestUpdate: $latestUpdate"
+    }
+
+    companion object {
+        fun divider(text: String): Application {
+            return Application(0, text, "", "", "", "", "", "", "", "", true)
+        }
     }
 }
