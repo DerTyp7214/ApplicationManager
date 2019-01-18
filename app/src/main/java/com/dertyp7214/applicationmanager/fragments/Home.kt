@@ -20,6 +20,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.dertyp7214.applicationmanager.BuildConfig
 import com.dertyp7214.applicationmanager.R
@@ -28,13 +29,15 @@ import com.dertyp7214.applicationmanager.helpers.Config
 import com.dertyp7214.applicationmanager.helpers.Network
 import com.dertyp7214.applicationmanager.helpers.Packages
 import com.dertyp7214.logs.helpers.Logger
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 
-class Home() : Fragment() {
+class Home : Fragment() {
 
+    private val url = "https://api.github.com/repos/DerTyp7214/ApplicationManager/releases"
+    private var prerelease = false
     private lateinit var activity: Activity
-    private val url = "https://api.github.com/repos/DerTyp7214/ApplicationManager/releases/latest"
     private lateinit var txtLatestVersion: TextView
     private lateinit var txtCurrentVersion: TextView
     private lateinit var txtUpdate: TextView
@@ -42,17 +45,21 @@ class Home() : Fragment() {
     private lateinit var layoutUpdate: LinearLayout
     private lateinit var refreshLayout: SwipeRefreshLayout
 
-    constructor(activity: Activity) : this() {
-        this.activity = activity
-    }
-
     companion object {
         private var release = ""
     }
 
+    operator fun JSONArray.iterator(): Iterator<JSONObject> =
+        (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
+
     @SuppressLint("SetTextI18n")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.home, container, false)
+
+        activity = getActivity()!!
+        activity.title = getString(R.string.home)
+
+        prerelease = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("beta_channel", false)
 
         txtLatestVersion = v.findViewById(R.id.txt_latest)
         txtCurrentVersion = v.findViewById(R.id.txt_current)
@@ -80,7 +87,9 @@ class Home() : Fragment() {
             Thread {
                 if (release.isEmpty() || refreshing)
                     release = Network.getJSONObject(url, Config.API_KEY)
-                val json = JSONObject(release)
+                val json = JSONArray(release).iterator().asSequence().find {
+                    (prerelease && it.getBoolean("prerelease")) || !it.getBoolean("prerelease")
+                }!!
                 val version = json.getString("tag_name")
                 val apk = json.getJSONArray("assets")?.getJSONObject(0)?.getString("browser_download_url")
 

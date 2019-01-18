@@ -59,6 +59,7 @@ class Splash : AppCompatActivity() {
         animator.addListener({
             Handler().postDelayed({
                 startActivity(Intent(this, MainActivity::class.java))
+                finish()
             }, resources.getInteger(android.R.integer.config_longAnimTime).toLong())
         })
         animator.start()

@@ -23,6 +23,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.dertyp7214.applicationmanager.R
 import com.dertyp7214.applicationmanager.fragments.Home
 import com.dertyp7214.applicationmanager.fragments.Repos
+import com.dertyp7214.applicationmanager.fragments.Settings
 import com.dertyp7214.logs.fragments.Logs
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -55,16 +56,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         path.deleteRecursively()
         path.mkdirs()
 
-        setFragment(Home(this), R.id.nav_home)
-        title = getString(R.string.home)
+        setFragment(Home(), R.id.nav_home)
     }
 
     override fun onBackPressed() {
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
-        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START)
-        } else {
-            super.onBackPressed()
+        when {
+            drawerLayout.isDrawerOpen(GravityCompat.START) -> drawerLayout.closeDrawer(GravityCompat.START)
+            currentFragment != R.id.nav_home -> setFragment(Home(), R.id.nav_home)
+            else -> super.onBackPressed()
         }
     }
 
@@ -73,15 +73,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toolbar.elevation = toolbarElevation
         when (item.itemId) {
             R.id.nav_home -> {
-                title = getString(R.string.home)
-                setFragment(Home(this), R.id.nav_home)
+                setFragment(Home(), R.id.nav_home)
             }
             R.id.nav_installed -> {
                 title = getString(R.string.installed)
             }
             R.id.nav_repos -> {
-                title = getString(R.string.repos)
-                setFragment(Repos(this), R.id.nav_repos)
+                setFragment(Repos(), R.id.nav_repos)
             }
             R.id.nav_log -> {
                 title = getString(R.string.logs)
@@ -99,10 +97,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 setFragment(Logs(), R.id.nav_log)
             }
             R.id.nav_settings -> {
-                title = getString(R.string.settings)
-                val i = 55 / 0
+                setFragment(Settings(), R.id.nav_settings)
             }
             R.id.nav_about -> {
+                val i = 55 / 0
             }
         }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)

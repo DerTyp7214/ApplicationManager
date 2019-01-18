@@ -19,17 +19,16 @@ import com.dertyp7214.applicationmanager.helpers.Comparators
 import com.dertyp7214.applicationmanager.helpers.Packages
 import com.dertyp7214.applicationmanager.props.Application
 
-class Repos() : Fragment() {
+class Repos : Fragment() {
 
-    private lateinit var activity: Activity
     private lateinit var api: Api
-
-    constructor(activity: Activity) : this() {
-        this.activity = activity
-    }
+    private lateinit var activity: Activity
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val v = inflater.inflate(R.layout.layout_repos, container, false)
+
+        activity = getActivity()!!
+        activity.title = getString(R.string.repos)
 
         api = Api(activity)
 
