@@ -1,4 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019.
+  ~ Created by Josua Lengwenath
+  -->
+
 <androidx.preference.PreferenceScreen
         xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
@@ -8,6 +13,7 @@
         <SwitchPreference
                 android:title="Use Beta"
                 android:key="beta_channel"
-                android:defaultValue="true"/>
+                android:defaultValue="false"/>
+        <com.dertyp7214.logs.preferences.LogMode/>
     </PreferenceCategory>
 </androidx.preference.PreferenceScreen>
