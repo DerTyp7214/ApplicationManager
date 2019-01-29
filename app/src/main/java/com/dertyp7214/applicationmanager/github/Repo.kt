@@ -39,7 +39,7 @@ class Repo(
 
     @SuppressLint("SimpleDateFormat")
     fun parsedUpdatedAt(): String {
-        return SimpleDateFormat("dd.MM.yyyy").format(updated_at())
+        return SimpleDateFormat("dd.MM.yyyy HH:mm:ss", Locale.UK).format(updated_at())
     }
 
     override fun toString(): String {

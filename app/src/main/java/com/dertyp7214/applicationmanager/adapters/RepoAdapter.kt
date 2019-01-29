@@ -14,7 +14,6 @@ import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
 import android.os.Environment
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,6 +28,7 @@ import com.dertyp7214.applicationmanager.R
 import com.dertyp7214.applicationmanager.helpers.Network
 import com.dertyp7214.applicationmanager.helpers.Packages
 import com.dertyp7214.applicationmanager.props.Application
+import com.dertyp7214.logs.helpers.Logger
 import com.dertyp7214.logs.helpers.Ui
 import ru.noties.markwon.Markwon
 import ru.noties.markwon.SpannableConfiguration
@@ -72,9 +72,11 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
         if (holder !is ViewHolderRepo) {
             holder.title.text = application.name.toUpperCase()
         } else {
-            holder.title.text = "${application.name} ${application.version}"
+            holder.title.text = application.name
+            holder.version.text = "v${application.version}"
             holder.update.text = "${activity.getString(R.string.update_on)}: ${application.latestUpdate}"
             holder.description.text = application.descriptionShort
+            holder.dev.text = "${activity.getString(R.string.created_by)} ${application.author}"
             holder.download
                 .setImageDrawable(activity.getDrawable(if (darkMode) R.drawable.ic_file_download_white_24dp else R.drawable.ic_file_download_black_24dp))
 
@@ -95,6 +97,7 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
                             application.latestApk,
                             path,
                             "${application.name}-${application.version}.apk",
+                            activity,
                             { progress ->
                                 progressDialog.setMessage("${activity.getString(R.string.download)} ${application.name}($progress%)")
                             },
@@ -127,8 +130,13 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
                 val text = TextView(activity)
                 text.setPadding(dpToPixel(10F).toInt())
                 text.setLineSpacing(0F, 1.2F)
-                Log.d("MARKDOWN", application.description)
-                Markwon.setMarkdown(text, config, application.description)
+                Thread {
+                    val desc = application.loadDescription()
+                    Logger.log(Logger.Companion.Type.INFO, "MARKDOWN", desc)
+                    activity.runOnUiThread {
+                        Markwon.setMarkdown(text, config, desc)
+                    }
+                }.start()
                 val dialog = AlertDialog.Builder(activity)
                     .setPositiveButton(activity.getString(android.R.string.ok)) { dialog, _ -> dialog.dismiss() }
                     .setView(text)
@@ -158,5 +166,7 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
         val description: TextView = v.findViewById(R.id.txt_description)
         val download: ImageView = v.findViewById(R.id.download)
         val layout: ViewGroup = v.findViewById(R.id.layout)
+        val dev: TextView = v.findViewById(R.id.txt_dev)
+        val version: TextView = v.findViewById(R.id.txt_version)
     }
 }

@@ -8,4 +8,5 @@
     <item name="noConnection" type="id"/>
     <item name="toolbar" type="id"/>
     <item name="menu_delete" type="id"/>
+    <item name="menu_search" type="id"/>
 </resources>

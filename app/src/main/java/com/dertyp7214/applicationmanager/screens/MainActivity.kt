@@ -14,6 +14,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.edit
 import androidx.core.view.GravityCompat
@@ -24,6 +25,7 @@ import com.dertyp7214.applicationmanager.R
 import com.dertyp7214.applicationmanager.fragments.Home
 import com.dertyp7214.applicationmanager.fragments.Repos
 import com.dertyp7214.applicationmanager.fragments.Settings
+import com.dertyp7214.applicationmanager.helpers.RepoLoader
 import com.dertyp7214.logs.fragments.Logs
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.app_bar_main.*
@@ -40,6 +42,13 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         setContentView(R.layout.activity_main)
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         setSupportActionBar(toolbar)
+
+        Thread {
+            val loader = RepoLoader.getInstance(this@MainActivity)
+            val first = loader.first
+            loader.loadRepo()
+            if (first && currentFragment == R.id.nav_repos) Repos.triggerAsync("")
+        }.start()
 
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         navView = findViewById(R.id.nav_view)
@@ -84,6 +93,22 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_repos -> {
                 setFragment(Repos(), R.id.nav_repos)
+                toolbar.inflateMenu(R.menu.search)
+                (toolbar.menu.findItem(R.id.menu_search).actionView as SearchView).apply {
+                    setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                        override fun onQueryTextSubmit(query: String?): Boolean {
+                            if (currentFragment == R.id.nav_repos)
+                                Repos.triggerAsync(query ?: "")
+                            return true
+                        }
+
+                        override fun onQueryTextChange(newText: String?): Boolean {
+                            if (currentFragment == R.id.nav_repos)
+                                Repos.triggerAsync(newText ?: "")
+                            return true
+                        }
+                    })
+                }
             }
             R.id.nav_log -> {
                 title = getString(R.string.logs)

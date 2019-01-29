@@ -11,11 +11,11 @@ import android.app.Application
 import android.app.UiModeManager
 import android.content.Context
 import android.graphics.Color
-import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
 import androidx.core.content.edit
 import com.dertyp7214.applicationmanager.helpers.Network
+import com.dertyp7214.applicationmanager.helpers.Network.Companion.isNetworkAvailable
 import com.dertyp7214.applicationmanager.screens.MainActivity
 import com.dertyp7214.applicationmanager.screens.Splash
 import com.dertyp7214.logs.helpers.Logger
@@ -115,10 +115,10 @@ class App : Application() {
                 if (thread!!.isAlive)
                     thread!!.interrupt()
             thread = Thread {
-                if (!isNetworkAvailable()) {
+                if (!isNetworkAvailable(activity!!)) {
                     try {
                         Network.disabled = true
-                        activity!!.runOnUiThread {
+                        activity.runOnUiThread {
                             StatusBarAlert.Builder(activity)
                                 .autoHide(false)
                                 .showProgress(true)
@@ -131,18 +131,18 @@ class App : Application() {
                 } else {
                     try {
                         Network.disabled = false
-                        activity!!.runOnUiThread {
+                        activity.runOnUiThread {
                             StatusBarAlert.hide(activity, Runnable {})
                         }
                     } catch (e: Exception) {
                     }
                 }
                 try {
-                    var last = isNetworkAvailable()
+                    var last = isNetworkAvailable(activity)
                     while (!thread!!.isInterrupted) {
                         Thread.sleep(500)
-                        if (last != isNetworkAvailable()) {
-                            last = isNetworkAvailable()
+                        if (last != isNetworkAvailable(activity)) {
+                            last = isNetworkAvailable(activity)
                             handleNetwork(activity)
                         }
                     }
@@ -152,11 +152,5 @@ class App : Application() {
             thread!!.start()
         } catch (e: Exception) {
         }
-    }
-
-    private fun isNetworkAvailable(): Boolean {
-        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val activeNetworkInfo = connectivityManager.activeNetworkInfo
-        return (activeNetworkInfo != null && activeNetworkInfo.isConnected)
     }
 }

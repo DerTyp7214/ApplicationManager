@@ -40,6 +40,15 @@
                 <TextView
                         android:text="TextView"
                         android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:id="@+id/txt_version"
+                        android:textStyle="bold|italic"/>
+                <TextView
+                        android:text="TextView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" android:id="@+id/txt_dev" android:textStyle="bold|italic"/>
+                <TextView
+                        android:text="TextView"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:id="@+id/txt_description"
                         android:layout_marginTop="4dp"/>

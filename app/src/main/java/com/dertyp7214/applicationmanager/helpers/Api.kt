@@ -137,11 +137,8 @@ class Api(private val context: Context) {
             val version = release.tag_name
             val author = it.repoProp.author
             val packageName = it.repoProp.id
-            val description = renderer.render(
-                parser.parse(
-                    getWebContent("https://raw.githubusercontent.com/$username/${it.name}/${if (it.description.isEmpty()) "master" else it.description}/README.md")
-                )
-            )
+            val description =
+                "https://raw.githubusercontent.com/$username/${it.name}/${if (it.description.isEmpty()) "master" else it.description}/README.md"
             val descriptionShort = it.repoProp.description
             val latestChanges = renderer.render(parser.parse(release.body))
             val latestApk = release.asset

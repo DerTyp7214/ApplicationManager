@@ -46,4 +46,6 @@
     <string name="app_crash">App crashed</string>
     <string name="app_crashed">Application Crashed</string>
     <string name="update_on">Updated on</string>
+    <string name="created_by">Created by</string>
+    <string name="search">Search</string>
 </resources>

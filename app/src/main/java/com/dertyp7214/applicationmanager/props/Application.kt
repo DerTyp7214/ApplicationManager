@@ -5,6 +5,10 @@
 
 package com.dertyp7214.applicationmanager.props
 
+import com.dertyp7214.applicationmanager.helpers.Network
+import org.commonmark.parser.Parser
+import org.commonmark.renderer.html.HtmlRenderer
+
 class Application(
     val id: Int,
     val name: String,
@@ -29,6 +33,14 @@ class Application(
                 "latestChanges: $latestChanges\t" +
                 "latestApk: $latestApk\t" +
                 "latestUpdate: $latestUpdate"
+    }
+
+    fun loadDescription(): String {
+        return if (description.startsWith("http")) {
+            val renderer = HtmlRenderer.builder().build()
+            val parser = Parser.builder().build()
+            renderer.render(parser.parse(Network.getWebContent(description)))
+        } else description
     }
 
     companion object {
