@@ -86,7 +86,7 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
                     .setMessage("Do you want to install '${application.name}' now?")
                     .setPositiveButton(R.string.install) { dialog: DialogInterface, _: Int ->
                         val path = File(Environment.getExternalStorageDirectory(), ".application_manager")
-                        if (!path.exists()) path.mkdirs()
+                        if (! path.exists()) path.mkdirs()
                         val progressDialog =
                             ProgressDialog.show(
                                 activity,
@@ -103,7 +103,7 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
                             },
                             { file: File, b: Boolean ->
                                 progressDialog.dismiss()
-                                if (!b)
+                                if (! b)
                                     Packages.install(activity, file)
                                 else
                                     Toast.makeText(
@@ -115,6 +115,40 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
                         dialog.dismiss()
                     }
                     .setNeutralButton(R.string.download) { dialog: DialogInterface, _: Int ->
+                        val path = File(
+                            File(Environment.getExternalStorageDirectory(), "ApplicationManager"),
+                            application.name
+                        )
+                        if (! path.exists()) path.mkdirs()
+                        val progressDialog =
+                            ProgressDialog.show(
+                                activity,
+                                "",
+                                "${activity.getString(R.string.download)} ${application.name}(0%)"
+                            )
+                        Network.downloadFile(
+                            application.zipUrl,
+                            path,
+                            "${application.version}.zip",
+                            activity,
+                            { progress ->
+                                progressDialog.setMessage("${activity.getString(R.string.download)} ${application.name}($progress%)")
+                            },
+                            { _, b ->
+                                progressDialog.dismiss()
+                                if (! b)
+                                    Toast.makeText(
+                                        activity,
+                                        activity.getString(R.string.downloaded),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                else
+                                    Toast.makeText(
+                                        activity,
+                                        activity.getString(R.string.error_apk),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                            })
                         dialog.dismiss()
                     }
                     .create()

@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2019.
+ * Created by Josua Lengwenath
+ */
+
 package com.dertyp7214.applicationmanager.helpers
 
 import com.dertyp7214.applicationmanager.props.Application
@@ -14,52 +19,15 @@ class JsonParser {
         fun applicationToJSON(applications: List<Application>): JSONArray {
             val array = JSONArray()
             applications.forEach {
-                val obj = JSONObject()
-                obj.put("id", it.id)
-                obj.put("name", it.name)
-                obj.put("version", it.version)
-                obj.put("author", it.author)
-                obj.put("packageName", it.packageName)
-                obj.put("description", it.description)
-                obj.put("descriptionShort", it.descriptionShort)
-                obj.put("latestChanges", it.latestChanges)
-                obj.put("latestApk", it.latestApk)
-                obj.put("latestUpdate", it.latestUpdate)
-                obj.put("divider", it.divider)
-                array.put(obj)
+                array.put(it.getData())
             }
             return array
         }
 
-        fun JSONtoApplication(array: JSONArray): List<Application> {
+        fun jsonToApplication(array: JSONArray): List<Application> {
             val list = ArrayList<Application>()
             array.forEach {
-                val id = it.getInt("id")
-                val name = it.getString("name")
-                val version = it.getString("version")
-                val author = it.getString("author")
-                val packageName = it.getString("packageName")
-                val description = it.getString("description")
-                val descriptionShort = it.getString("descriptionShort")
-                val latestChanges = it.getString("latestChanges")
-                val latestApk = it.getString("latestApk")
-                val latestUpdate = it.getString("latestUpdate")
-                val divider = it.getBoolean("divider")
-                list.add(
-                    Application(
-                        id,
-                        name,
-                        version,
-                        author,
-                        packageName,
-                        description,
-                        descriptionShort,
-                        latestChanges,
-                        latestApk,
-                        latestUpdate,
-                        divider
-                    )
-                )
+                list.add(Application.setData(it))
             }
             return list
         }

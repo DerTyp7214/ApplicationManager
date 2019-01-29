@@ -23,6 +23,7 @@ import kotlin.collections.ArrayList
 class Api(private val context: Context) {
     companion object {
         const val baseUrl = "https://api.github.com"
+        const val github = "https://github.com"
         const val username = "Application-Repo"
     }
 
@@ -143,6 +144,8 @@ class Api(private val context: Context) {
             val latestChanges = renderer.render(parser.parse(release.body))
             val latestApk = release.asset
             val latestUpdate = it.parsedUpdatedAt()
+            val zipUrl =
+                "$github/$username/$name/archive/${if (it.description.isEmpty()) "master" else it.description}.zip"
             Application(
                 id,
                 name,
@@ -153,7 +156,8 @@ class Api(private val context: Context) {
                 descriptionShort,
                 latestChanges,
                 latestApk,
-                latestUpdate
+                latestUpdate,
+                zipUrl
             )
         }
     }

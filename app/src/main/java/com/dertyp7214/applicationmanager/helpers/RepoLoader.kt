@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2019.
+ * Created by Josua Lengwenath
+ */
+
 package com.dertyp7214.applicationmanager.helpers
 
 import android.annotation.SuppressLint
@@ -32,7 +37,7 @@ class RepoLoader private constructor(private val context: Context) {
     }
 
     fun getRepoList(query: String = ""): List<Application> {
-        return JsonParser.JSONtoApplication(loadList("repo")).filter {
+        return JsonParser.jsonToApplication(loadList("repo")).filter {
             query.isBlank() || it.name.contains(query, true) || it.author.contains(query, true)
         }
     }
