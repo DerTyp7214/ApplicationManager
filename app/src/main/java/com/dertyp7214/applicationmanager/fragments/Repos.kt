@@ -3,6 +3,8 @@
  * Created by Josua Lengwenath
  */
 
+@file:Suppress("DEPRECATION")
+
 package com.dertyp7214.applicationmanager.fragments
 
 import android.app.Activity
@@ -12,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.dertyp7214.applicationmanager.R
 import com.dertyp7214.applicationmanager.adapters.RepoAdapter
 import com.dertyp7214.applicationmanager.helpers.Api
@@ -45,10 +48,19 @@ class Repos : Fragment() {
             loadData(v, it)
         }
 
+        v.findViewById<SwipeRefreshLayout>(R.id.refresh).apply {
+            setOnRefreshListener {
+                RepoLoader.getInstance(activity).loadRepoAsync()
+                loadData(v, "") {
+                    isRefreshing = false
+                }
+            }
+        }
+
         return v
     }
 
-    private fun loadData(v: View, query: String = "") {
+    private fun loadData(v: View, query: String = "", finished: () -> Unit = {}) {
         Thread {
             val apps = ArrayList<Application>()
             val updates = ArrayList<Application>()
@@ -75,6 +87,7 @@ class Repos : Fragment() {
             activity.runOnUiThread {
                 if (dialog != null && dialog!!.isShowing) dialog!!.dismiss()
                 RepoAdapter(activity, v.findViewById(R.id.rv), apps)
+                finished()
             }
         }.start()
     }
