@@ -24,6 +24,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.transition.TransitionManager
 import com.dertyp7214.applicationmanager.R
+import com.dertyp7214.applicationmanager.fragments.About
 import com.dertyp7214.applicationmanager.fragments.Home
 import com.dertyp7214.applicationmanager.fragments.Repos
 import com.dertyp7214.applicationmanager.fragments.Settings
@@ -141,6 +142,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 setFragment(Settings(), R.id.nav_settings)
             }
             R.id.nav_about -> {
+                setFragment(About(), R.id.nav_about)
+            }
+            R.id.nav_crash-> {
                 val i = 55 / 0
             }
         }

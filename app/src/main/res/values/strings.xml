@@ -49,4 +49,10 @@
     <string name="created_by">Created by</string>
     <string name="search">Search</string>
     <string name="downloaded">Repo Downloaded</string>
+    <string name="version">Version</string>
+    <string name="dertyp7214">DerTyp7214 (Josua Lengwenath)</string>
+
+
+    <string name="url_github_dertyp7214">https://github.com/DerTyp7214</string>
+    <string name="url_github_dertyp7214_profile_image">https://avatars1.githubusercontent.com/u/37804065?s=128</string>
 </resources>
