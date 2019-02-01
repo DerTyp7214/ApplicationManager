@@ -23,7 +23,7 @@ class RepoLoader private constructor(private val context: Context) {
         fun getInstance(context: Context): RepoLoader {
             if (instance == null)
                 instance = RepoLoader(context)
-            return instance!!
+            return instance !!
         }
     }
 
@@ -34,6 +34,12 @@ class RepoLoader private constructor(private val context: Context) {
         loading = true
         saveList("repo", JsonParser.applicationToJSON(api.loadApplications(api.getRepos(""))))
         loading = false
+    }
+
+    fun loadRepoAsync() {
+        Thread {
+            loadRepo()
+        }.start()
     }
 
     fun getRepoList(query: String = ""): List<Application> {

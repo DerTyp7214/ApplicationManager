@@ -11,8 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".fragments.Repos">
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/rv"/>
+            android:layout_height="match_parent" android:id="@+id/refresh">
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/rv"/>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 </LinearLayout>
