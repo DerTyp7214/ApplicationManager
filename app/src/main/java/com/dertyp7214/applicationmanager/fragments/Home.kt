@@ -112,8 +112,13 @@ class Home : Fragment() {
                                 ProgressDialog.show(activity, "", "${getString(R.string.download_update)}(0%)")
                             Network.downloadFile(apk, path,
                                 "${getString(R.string.app_name).toLowerCase().replace(" ", "_")}-" +
-                                        "${version.replace(".", "_")}.apk", activity, { progress ->
-                                    progressDialog.setMessage("${getString(R.string.download_update)}($progress%)")
+                                        "${version.replace(".", "_")}.apk", activity, { progress, bytes ->
+                                    progressDialog.setMessage(
+                                        "${getString(R.string.download_update)}(${
+                                        if (progress > 0) "$progress%"
+                                        else Network.humanReadableByteCount(bytes, true)
+                                        })"
+                                    )
                                 }, { file, success ->
                                     progressDialog.dismiss()
                                     if (!success)

@@ -86,7 +86,7 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
                     .setMessage("Do you want to install '${application.name}' now?")
                     .setPositiveButton(R.string.install) { dialog: DialogInterface, _: Int ->
                         val path = File(Environment.getExternalStorageDirectory(), ".application_manager")
-                        if (! path.exists()) path.mkdirs()
+                        if (!path.exists()) path.mkdirs()
                         val progressDialog =
                             ProgressDialog.show(
                                 activity,
@@ -98,12 +98,17 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
                             path,
                             "${application.name}-${application.version}.apk",
                             activity,
-                            { progress ->
-                                progressDialog.setMessage("${activity.getString(R.string.download)} ${application.name}($progress%)")
+                            { progress, bytes ->
+                                progressDialog.setMessage(
+                                    "${activity.getString(R.string.download)} ${application.name}(${
+                                    if (progress > 0) "$progress%"
+                                    else Network.humanReadableByteCount(bytes, true)
+                                    })"
+                                )
                             },
                             { file: File, b: Boolean ->
                                 progressDialog.dismiss()
-                                if (! b)
+                                if (!b)
                                     Packages.install(activity, file)
                                 else
                                     Toast.makeText(
@@ -119,7 +124,7 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
                             File(Environment.getExternalStorageDirectory(), "ApplicationManager"),
                             application.name
                         )
-                        if (! path.exists()) path.mkdirs()
+                        if (!path.exists()) path.mkdirs()
                         val progressDialog =
                             ProgressDialog.show(
                                 activity,
@@ -131,12 +136,17 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
                             path,
                             "${application.version}.zip",
                             activity,
-                            { progress ->
-                                progressDialog.setMessage("${activity.getString(R.string.download)} ${application.name}($progress%)")
+                            { progress, bytes ->
+                                progressDialog.setMessage(
+                                    "${activity.getString(R.string.download)} ${application.name}(${
+                                    if (progress > 0) "$progress%"
+                                    else Network.humanReadableByteCount(bytes, true)
+                                    })"
+                                )
                             },
                             { _, b ->
                                 progressDialog.dismiss()
-                                if (! b)
+                                if (!b)
                                     Toast.makeText(
                                         activity,
                                         activity.getString(R.string.downloaded),

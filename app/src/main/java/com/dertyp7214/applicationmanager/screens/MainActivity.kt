@@ -12,6 +12,7 @@ import android.os.Environment
 import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
+import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -21,6 +22,7 @@ import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.transition.TransitionManager
 import com.dertyp7214.applicationmanager.R
 import com.dertyp7214.applicationmanager.fragments.Home
 import com.dertyp7214.applicationmanager.fragments.Repos
@@ -94,11 +96,21 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_repos -> {
                 setFragment(Repos(), R.id.nav_repos)
                 toolbar.inflateMenu(R.menu.search)
-                (toolbar.menu.findItem(R.id.menu_search).actionView as SearchView).apply {
+                val search = toolbar.menu.findItem(R.id.menu_search).actionView as SearchView
+                search.apply {
+                    setOnSearchClickListener {
+                        TransitionManager.beginDelayedTransition(toolbar)
+                        toolbar.menu.findItem(R.id.menu_search).expandActionView()
+                    }
                     setOnQueryTextListener(object : SearchView.OnQueryTextListener {
                         override fun onQueryTextSubmit(query: String?): Boolean {
                             if (currentFragment == R.id.nav_repos)
                                 Repos.triggerAsync(query ?: "")
+                            val view = this@MainActivity.currentFocus
+                            if (view != null) {
+                                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                imm.hideSoftInputFromWindow(view.windowToken, 0)
+                            }
                             return true
                         }
 

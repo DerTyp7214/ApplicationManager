@@ -9,10 +9,7 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.util.Log
 import com.dertyp7214.logs.helpers.Logger
-import com.downloader.Error
-import com.downloader.OnDownloadListener
-import com.downloader.PRDownloader
-import com.downloader.Status
+import com.downloader.*
 import java.io.BufferedReader
 import java.io.File
 import java.io.InputStreamReader
@@ -25,6 +22,9 @@ import javax.net.ssl.SSLException
 class Network {
     companion object {
         var disabled = false
+        private val Progress.value
+            get() = currentBytes / 100L * totalBytes
+
         fun getWebContent(url: String, startTime: Long = System.currentTimeMillis()): String {
             Logger.log(
                 Logger.Companion.Type.DEBUG,
@@ -106,7 +106,7 @@ class Network {
             path: File,
             filename: String,
             context: Context,
-            onProgress: (progress: Int) -> Unit,
+            onProgress: (progress: Long, bytes: Long) -> Unit,
             onFinish: (file: File, error: Boolean) -> Unit
         ) {
             Logger.log(
@@ -117,7 +117,7 @@ class Network {
             val id = PRDownloader.download(url, path.absolutePath, filename)
                 .build()
                 .setOnProgressListener {
-                    onProgress((it.currentBytes * 100 / it.totalBytes).toInt())
+                    onProgress(it.value, it.currentBytes)
                 }
                 .setOnCancelListener {
                     onFinish(File(path, filename), true)
@@ -152,6 +152,14 @@ class Network {
             val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val activeNetworkInfo = connectivityManager.activeNetworkInfo
             return (activeNetworkInfo != null && activeNetworkInfo.isConnected)
+        }
+
+        fun humanReadableByteCount(bytes: Long, si: Boolean): String {
+            val unit = if (si) 1000 else 1024
+            if (bytes < unit) return "$bytes B"
+            val exp = (Math.log(bytes.toDouble()) / Math.log(unit.toDouble())).toInt()
+            val pre = (if (si) "kMGTPE" else "KMGTPE")[exp - 1] + if (si) "" else "i"
+            return String.format("%.1f %sB", bytes / Math.pow(unit.toDouble(), exp.toDouble()), pre)
         }
     }
 }

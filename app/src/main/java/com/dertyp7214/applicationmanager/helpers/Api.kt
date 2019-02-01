@@ -145,7 +145,7 @@ class Api(private val context: Context) {
             val latestApk = release.asset
             val latestUpdate = it.parsedUpdatedAt()
             val zipUrl =
-                "$github/$username/$name/archive/${if (it.description.isEmpty()) "master" else it.description}.zip"
+                "$github/$username/$name/zipball/${if (it.description.isEmpty()) "master" else it.description}"
             Application(
                 id,
                 name,
