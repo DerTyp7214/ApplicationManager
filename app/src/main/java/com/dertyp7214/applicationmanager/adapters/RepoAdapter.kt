@@ -202,7 +202,7 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
     }
 
     open class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val title: TextView = v.findViewById(R.id.txt_title)
+        val title: TextView = v.findViewById(R.id.txt_update)
     }
 
     class ViewHolderRepo(v: View) : ViewHolder(v) {

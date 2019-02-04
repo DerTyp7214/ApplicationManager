@@ -27,9 +27,9 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_log">Logs</string>
     <string name="menu_installed">Installed</string>
-    <string name="latestVersion">Latest Version</string>
+    <string name="latestVersion">Latest</string>
     <string name="loading">loading</string>
-    <string name="currentVersion">Current Version</string>
+    <string name="currentVersion">Installed</string>
     <string name="update">Update</string>
     <string name="error_apk">There was an error!</string>
     <string name="download_update">Download update</string>
@@ -55,4 +55,11 @@
 
     <string name="url_github_dertyp7214">https://github.com/DerTyp7214</string>
     <string name="url_github_dertyp7214_profile_image">https://avatars1.githubusercontent.com/u/37804065?s=128</string>
+    <string name="no_entries">No entries</string>
+    <string name="update_available">Update Available!</string>
+    <string name="checking_for_updates">Checking for updates</string>
+    <string name="up_to_date">is up to date</string>
+    <string name="uninstall">Uninstall</string>
+    <string name="package_name">Package</string>
+    <string name="todo">TODO</string>
 </resources>

@@ -42,7 +42,7 @@ class Application(
         return if (description.startsWith("http")) {
             val renderer = HtmlRenderer.builder().build()
             val parser = Parser.builder().build()
-            renderer.render(parser.parse(Network.getWebContent(description)))
+            renderer.render(parser.parse(Network.getWebContent(description, useCache = true)))
         } else description
     }
 

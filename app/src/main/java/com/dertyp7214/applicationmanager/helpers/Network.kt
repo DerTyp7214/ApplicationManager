@@ -25,13 +25,19 @@ class Network {
         private val Progress.value
             get() = currentBytes / 100L * totalBytes
 
-        fun getWebContent(url: String, startTime: Long = System.currentTimeMillis()): String {
+        private val cache = HashMap<String, String>()
+        fun getWebContent(
+            url: String,
+            startTime: Long = System.currentTimeMillis(),
+            useCache: Boolean = false
+        ): String {
             Logger.log(
                 Logger.Companion.Type.DEBUG,
                 "getWebContent",
                 "url: $url, startTime: ${System.currentTimeMillis() - startTime}"
             )
-            return try {
+            if (useCache && cache.containsKey(url)) return cache[url] !!
+            else return try {
                 val web = URL(url)
                 val reader = BufferedReader(InputStreamReader(web.openStream()))
 
@@ -39,7 +45,7 @@ class Network {
                 var line: String? = null
 
                 while ({ line = reader.readLine(); line }() != null)
-                    ret.append(line!!).append("\n")
+                    ret.append(line !!).append("\n")
 
                 reader.close()
                 ret.toString()
@@ -51,6 +57,8 @@ class Network {
             } catch (e: Exception) {
                 Logger.log(Logger.Companion.Type.ERROR, "getWebContent", Log.getStackTraceString(e))
                 ""
+            }.apply {
+                cache[url] = this
             }
         }
 
@@ -75,7 +83,7 @@ class Network {
                 val ret = StringBuilder()
 
                 while ({ inputLine = reader.readLine(); inputLine }() != null)
-                    ret.append(inputLine!!)
+                    ret.append(inputLine !!)
 
                 reader.close()
                 ret.toString()
@@ -138,7 +146,7 @@ class Network {
                 })
             Thread {
                 while (PRDownloader.getStatus(id) == Status.RUNNING || PRDownloader.getStatus(id) == Status.PAUSED) {
-                    if (!isNetworkAvailable(context)) {
+                    if (! isNetworkAvailable(context)) {
                         PRDownloader.pause(id)
                     } else if (isNetworkAvailable(context) && PRDownloader.getStatus(id) == Status.PAUSED) {
                         PRDownloader.resume(id)
