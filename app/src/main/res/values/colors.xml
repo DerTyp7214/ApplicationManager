@@ -5,7 +5,9 @@
   -->
 
 <resources>
-    <color name="colorPrimary">#00A308</color>
-    <color name="colorPrimaryDark">#0C7A00</color>
-    <color name="colorAccent">#1BD83A</color>
+    <color name="iconColor">#797FD3</color>
+    <color name="colorPrimary">#797FD3</color>
+    <color name="colorPrimaryDark">#5B5FA0</color>
+    <color name="colorAccentDark">#F0F0F0</color>
+    <color name="colorAccentLight">#1D1D1D</color>
 </resources>

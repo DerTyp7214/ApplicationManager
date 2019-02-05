@@ -10,22 +10,21 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorAccentLight</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <style name="AppTheme.Dark" parent="Theme.MaterialComponents">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorAccentDark</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -34,9 +33,6 @@
 
     <style name="AppTheme.Dark.NoActionBar" parent="AppTheme.Dark">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
@@ -54,6 +50,8 @@
         <item name="colorPrimary">@android:color/darker_gray</item>
         <item name="colorPrimaryDark">@android:color/darker_gray</item>
         <item name="colorAccent">@android:color/holo_red_light</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:fitsSystemWindows">true</item>
     </style>
 
     <style name="AppTheme.Launch">

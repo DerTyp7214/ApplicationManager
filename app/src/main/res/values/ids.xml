@@ -9,6 +9,6 @@
     <item name="toolbar" type="id"/>
     <item name="menu_delete" type="id"/>
     <item name="menu_search" type="id"/>
-    <item name="nav_crash" type="id" />
+    <item name="nav_crash" type="id"/>
     <item name="bottomSheetPreferenceItemId" type="id"/>
 </resources>

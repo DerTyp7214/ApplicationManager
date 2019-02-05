@@ -95,10 +95,11 @@
                 android:layout_margin="0dp"
                 android:id="@+id/magisk_card">
             <LinearLayout
+                    android:background="?android:attr/selectableItemBackground"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-            >
+                    android:id="@+id/layout_magisk">
                 <LinearLayout
                         android:orientation="horizontal"
                         android:layout_width="wrap_content"
