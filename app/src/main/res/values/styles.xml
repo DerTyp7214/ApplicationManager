@@ -51,6 +51,7 @@
         <item name="colorPrimaryDark">@android:color/darker_gray</item>
         <item name="colorAccent">@android:color/holo_red_light</item>
         <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:fitsSystemWindows">true</item>
     </style>
 

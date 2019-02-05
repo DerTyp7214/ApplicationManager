@@ -39,6 +39,10 @@
                 android:id="@+id/nav_settings"
                 android:icon="@drawable/ic_settings_black_24dp"
                 android:title="@string/menu_settings"/>
+        <item
+                android:id="@+id/nav_dev_settings"
+                android:icon="@drawable/ic_developer_mode_black_24dp"
+                android:title="@string/menu_dev_settings"/>
     </group>
     <group
             android:checkableBehavior="single"

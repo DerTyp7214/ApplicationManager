@@ -24,10 +24,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.transition.TransitionManager
 import com.dertyp7214.applicationmanager.R
-import com.dertyp7214.applicationmanager.fragments.About
-import com.dertyp7214.applicationmanager.fragments.Home
-import com.dertyp7214.applicationmanager.fragments.Repos
-import com.dertyp7214.applicationmanager.fragments.Settings
+import com.dertyp7214.applicationmanager.fragments.*
 import com.dertyp7214.applicationmanager.helpers.RepoLoader
 import com.dertyp7214.logs.fragments.Logs
 import com.google.android.material.navigation.NavigationView
@@ -62,6 +59,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         toggle.syncState()
 
         navView.setNavigationItemSelectedListener(this)
+
+        val devSettingsItem = navView.menu.findItem(R.id.nav_dev_settings)
+        if (false && !getSharedPreferences("dev_settings", MODE_PRIVATE).getBoolean(
+                "enabled",
+                false
+            )
+        ) // TODO: delete false
+            devSettingsItem.isVisible = false
 
         toolbarElevation = toolbar.elevation
 
@@ -140,6 +145,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_settings -> {
                 setFragment(Settings(), R.id.nav_settings)
+            }
+            R.id.nav_dev_settings -> {
+                setFragment(DevSettings(), R.id.nav_dev_settings)
             }
             R.id.nav_about -> {
                 setFragment(About(), R.id.nav_about)

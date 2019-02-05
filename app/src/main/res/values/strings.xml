@@ -62,4 +62,6 @@
     <string name="uninstall">Uninstall</string>
     <string name="package_name">Package</string>
     <string name="todo">TODO</string>
+    <string name="menu_dev_settings">Developer Settings</string>
+    <string name="dev_settings">Developer Settings</string>
 </resources>
