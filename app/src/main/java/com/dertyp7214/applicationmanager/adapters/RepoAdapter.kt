@@ -13,7 +13,6 @@ import android.content.DialogInterface
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
 import android.os.Environment
-import android.util.DisplayMetrics
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -30,6 +29,7 @@ import com.dertyp7214.applicationmanager.helpers.Packages
 import com.dertyp7214.applicationmanager.props.Application
 import com.dertyp7214.logs.helpers.Logger
 import com.dertyp7214.logs.helpers.Ui
+import com.dertyp7214.preferencesplus.core.dp
 import ru.noties.markwon.Markwon
 import ru.noties.markwon.SpannableConfiguration
 import ru.noties.markwon.il.AsyncDrawableLoader
@@ -172,7 +172,7 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
                     .asyncDrawableLoader(AsyncDrawableLoader.create())
                     .build()
                 val text = TextView(activity)
-                text.setPadding(dpToPixel(10F).toInt())
+                text.setPadding(10.dp(activity))
                 text.setLineSpacing(0F, 1.2F)
                 Thread {
                     val desc = application.loadDescription()
@@ -193,16 +193,8 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
         }
     }
 
-    private fun dpToPixel(dp: Float): Float {
-        return dp * (activity.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
-    }
-
-    private fun pixelsToDp(px: Float): Float {
-        return px / (activity.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
-    }
-
     open class ViewHolder(v: View) : RecyclerView.ViewHolder(v) {
-        val title: TextView = v.findViewById(R.id.txt_update)
+        val title: TextView = v.findViewById(R.id.txt_title)
     }
 
     class ViewHolderRepo(v: View) : ViewHolder(v) {
