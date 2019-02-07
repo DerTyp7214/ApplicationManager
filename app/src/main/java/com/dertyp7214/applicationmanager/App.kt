@@ -63,11 +63,11 @@ class App : Application() {
                 }
                 val themeLightNo = when (theme) {
                     R.style.AppTheme_Green -> R.style.AppTheme_Green_NoActionBar
-                    else -> R.style.AppTheme
+                    else -> R.style.AppTheme_NoActionBar
                 }
                 val themeDarkNo = when (theme) {
                     R.style.AppTheme_Green -> R.style.AppTheme_Green_Dark_NoActionBar
-                    else -> R.style.AppTheme_Dark
+                    else -> R.style.AppTheme_Dark_NoActionBar
                 }
                 putInt("themeLight", themeLight)
                 putInt("themeDark", themeDark)
