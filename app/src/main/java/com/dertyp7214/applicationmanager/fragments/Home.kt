@@ -98,30 +98,35 @@ class Home : Fragment() {
                         )
                     magiskIcon = info.loadIcon(context!!.packageManager)
                     activity.runOnUiThread {
-                        ChangeBounds().apply {
-                            startDelay = 0
-                            interpolator = AccelerateDecelerateInterpolator()
-                            duration = resources.getInteger(android.R.integer.config_longAnimTime).toLong()
-                            TransitionManager.beginDelayedTransition(magiskCard, this)
-                        }
-                        magiskCard.apply {
-                            if (layoutParams != null) layoutParams.height = WRAP_CONTENT
-                            else layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-                            val margin = 7.dp(activity)
-                            setMargins(margin, margin, margin, margin)
-                            requestLayout()
-                        }
-                        magiskCard.findViewById<ViewGroup>(R.id.layout_magisk).setOnClickListener {
-                            startActivity(activity.packageManager.getLaunchIntentForPackage(info.packageName))
-                        }
-                        v.findViewById<TextView>(R.id.magisk_app_name).text = info.loadLabel(context!!.packageManager)
-                        v.findViewById<TextView>(R.id.txt_magisk_version).text =
+                        try {
+                            ChangeBounds().apply {
+                                startDelay = 0
+                                interpolator = AccelerateDecelerateInterpolator()
+                                duration = resources.getInteger(android.R.integer.config_longAnimTime).toLong()
+                                TransitionManager.beginDelayedTransition(magiskCard, this)
+                            }
+                            magiskCard.apply {
+                                if (layoutParams != null) layoutParams.height = WRAP_CONTENT
+                                else layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+                                val margin = 7.dp(activity)
+                                setMargins(margin, margin, margin, margin)
+                                requestLayout()
+                            }
+                            magiskCard.findViewById<ViewGroup>(R.id.layout_magisk).setOnClickListener {
+                                startActivity(activity.packageManager.getLaunchIntentForPackage(info.packageName))
+                            }
+                            v.findViewById<TextView>(R.id.magisk_app_name).text =
+                                info.loadLabel(context!!.packageManager)
+                            v.findViewById<TextView>(R.id.txt_magisk_version).text =
                                 "${getString(R.string.version)}: ${magiskObject.getString("versionName")} (${magiskObject.getString(
                                     "versionCode"
                                 )})"
-                        v.findViewById<TextView>(R.id.txt_magisk_packagename).text =
+                            v.findViewById<TextView>(R.id.txt_magisk_packagename).text =
                                 "${getString(R.string.package_name)}: ${info.packageName}"
-                        v.findViewById<ImageView>(R.id.magisk_icon).setImageDrawable(magiskIcon)
+                            v.findViewById<ImageView>(R.id.magisk_icon).setImageDrawable(magiskIcon)
+                        } catch (e: Exception) {
+                            Logger.log(Logger.Companion.Type.ERROR, "checkForMagisk", Log.getStackTraceString(e))
+                        }
                     }
                 } catch (e: Exception) {
                     Logger.log(Logger.Companion.Type.ERROR, "checkForMagisk", Log.getStackTraceString(e))
@@ -158,7 +163,7 @@ class Home : Fragment() {
         refreshLayout.isRefreshing = false
         txtUpdate.text = "${getString(R.string.checking_for_updates)}..."
         txtCurrentVersion.text =
-                "${getString(R.string.currentVersion)}: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
+            "${getString(R.string.currentVersion)}: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
 
         try {
             Handler().postDelayed({
@@ -178,7 +183,7 @@ class Home : Fragment() {
                                 changeBounds.startDelay = 0
                                 changeBounds.interpolator = AccelerateDecelerateInterpolator()
                                 changeBounds.duration =
-                                        resources.getInteger(android.R.integer.config_longAnimTime).toLong()
+                                    resources.getInteger(android.R.integer.config_longAnimTime).toLong()
                                 TransitionManager.beginDelayedTransition(cardVersions, changeBounds)
                                 TransitionManager.beginDelayedTransition(magiskCard, changeBounds)
                                 btnUpdate.visibility = VISIBLE
@@ -192,7 +197,7 @@ class Home : Fragment() {
                                     "latestVersion: $version, currentVersion: ${BuildConfig.VERSION_NAME}, update: $update"
                                 )
                                 txtUpdate.text =
-                                        "${getString(R.string.app_name)} ${getString(if (update && apk != null) R.string.update_available else R.string.up_to_date)}"
+                                    "${getString(R.string.app_name)} ${getString(if (update && apk != null) R.string.update_available else R.string.up_to_date)}"
                                 if (update && apk != null) {
                                     btnUpdate.text = getString(R.string.update)
                                     btnUpdate.setOnClickListener {

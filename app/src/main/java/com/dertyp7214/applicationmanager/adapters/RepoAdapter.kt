@@ -6,7 +6,6 @@
 package com.dertyp7214.applicationmanager.adapters
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context.MODE_PRIVATE
 import android.content.DialogInterface
@@ -24,6 +23,7 @@ import androidx.core.view.setPadding
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dertyp7214.applicationmanager.R
+import com.dertyp7214.applicationmanager.fragments.Repos
 import com.dertyp7214.applicationmanager.helpers.Network
 import com.dertyp7214.applicationmanager.helpers.Packages
 import com.dertyp7214.applicationmanager.props.Application
@@ -35,8 +35,10 @@ import ru.noties.markwon.SpannableConfiguration
 import ru.noties.markwon.il.AsyncDrawableLoader
 import java.io.File
 
-class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, private val apps: List<Application>) :
+class RepoAdapter(private val fragment: Repos, recyclerView: RecyclerView, private val apps: List<Application>) :
     RecyclerView.Adapter<RepoAdapter.ViewHolder>() {
+
+    private val activity = fragment.activity!!
 
     init {
         recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -91,18 +93,18 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
                             ProgressDialog.show(
                                 activity,
                                 "",
-                                "${activity.getString(R.string.download)} ${application.name}(0%)"
+                                "${activity.getString(R.string.download)} ${application.name}"
                             )
                         Network.downloadFile(
                             application.latestApk,
                             path,
                             "${application.name}-${application.version}.apk",
                             activity,
-                            { progress, bytes ->
+                            { _, bytes ->
                                 progressDialog.setMessage(
-                                    "${activity.getString(R.string.download)} ${application.name}(${
-                                    if (progress > 0) "$progress%"
-                                    else Network.humanReadableByteCount(bytes, true)
+                                    "${activity.getString(R.string.download)} ${application.name} (${
+                                    /*if (progress > 0) "$progress%"
+                                    else*/ Network.humanReadableByteCount(bytes, true)
                                     })"
                                 )
                             },
@@ -116,6 +118,7 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
                                         activity.getString(R.string.error_apk),
                                         Toast.LENGTH_LONG
                                     ).show()
+                                fragment.loadData { }
                             })
                         dialog.dismiss()
                     }
@@ -129,18 +132,18 @@ class RepoAdapter(private val activity: Activity, recyclerView: RecyclerView, pr
                             ProgressDialog.show(
                                 activity,
                                 "",
-                                "${activity.getString(R.string.download)} ${application.name}(0%)"
+                                "${activity.getString(R.string.download)} ${application.name}"
                             )
                         Network.downloadFile(
                             application.zipUrl,
                             path,
                             "${application.version}.zip",
                             activity,
-                            { progress, bytes ->
+                            { _, bytes ->
                                 progressDialog.setMessage(
-                                    "${activity.getString(R.string.download)} ${application.name}(${
-                                    if (progress > 0) "$progress%"
-                                    else Network.humanReadableByteCount(bytes, true)
+                                    "${activity.getString(R.string.download)} ${application.name} (${
+                                    /*if (progress > 0) "$progress%"
+                                    else*/ Network.humanReadableByteCount(bytes, true)
                                     })"
                                 )
                             },

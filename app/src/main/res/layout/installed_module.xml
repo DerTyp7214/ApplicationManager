@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools" android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="7dp">
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" android:padding="5dp">
+            <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+                <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1">
+                    <TextView
+                            android:text="Title"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:id="@+id/txt_title" android:textSize="18sp"
+                    />
+                    <TextView
+                            android:text="@string/version"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:id="@+id/txt_version"
+                            android:textStyle="bold|italic" android:textSize="15sp"/>
+                    <TextView
+                            android:text="Dev"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content" android:id="@+id/txt_dev"
+                            android:textStyle="bold|italic"
+                            android:textSize="15sp"/>
+                </LinearLayout>
+                <CheckBox
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" android:id="@+id/check_box_disable"
+                        tools:visibility="gone"/>
+                <ImageView
+                        android:focusable="true"
+                        android:clickable="true"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:srcCompat="@drawable/ic_action_delete"
+                        android:id="@+id/btn_delete" android:padding="2dp"
+                        android:tintMode="multiply" android:tint="@android:color/black"
+                        android:contentDescription="@string/todo"/>
+            </LinearLayout>
+            <TextView
+                    android:text="Description"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:id="@+id/txt_description_short"
+                    android:textSize="15sp"/>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+</LinearLayout>

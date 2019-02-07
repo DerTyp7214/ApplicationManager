@@ -71,8 +71,8 @@
                     android:layout_height="34dp"
                     android:focusable="true"
                     android:clickable="true"
-                    app:srcCompat="@drawable/ic_file_download_black_24dp"
                     android:background="?android:attr/selectableItemBackground"
+                    app:srcCompat="@drawable/ic_file_download_black_24dp"
                     android:id="@+id/download"
             />
         </LinearLayout>

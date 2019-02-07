@@ -9,26 +9,17 @@ package com.dertyp7214.applicationmanager.helpers
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.content.pm.ApplicationInfo
-import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import com.dertyp7214.applicationmanager.App.Companion.packages
 import com.dertyp7214.applicationmanager.R
 import com.dertyp7214.logs.helpers.Logger
 import com.dertyp7214.preferencesplus.components.ColorUtil.Companion.getDominantColor
 import org.json.JSONObject
 
 class RootChecker private constructor(private val application: Application) {
-
-    private var packages: MutableList<ApplicationInfo>? = null
-        get() {
-            if (field == null) {
-                field = application.packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
-            }
-            return field
-        }
 
     private var json: JSONObject? = null
 

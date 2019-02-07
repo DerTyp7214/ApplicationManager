@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 setFragment(Home(), R.id.nav_home)
             }
             R.id.nav_installed -> {
-                title = getString(R.string.installed)
+                setFragment(Installed(), R.id.nav_installed)
             }
             R.id.nav_repos -> {
                 setFragment(Repos(), R.id.nav_repos)
@@ -152,7 +152,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_about -> {
                 setFragment(About(), R.id.nav_about)
             }
-            R.id.nav_crash-> {
+            R.id.nav_crash -> {
                 val i = 55 / 0
             }
         }
@@ -176,5 +176,15 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 if (animated) fragmentTransaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 fragmentTransaction.commit()
             }, 250)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            1337 -> {
+                Installed.instance?.loadInstalledModules()
+                Repos.instance?.loadData { }
+            }
+        }
     }
 }

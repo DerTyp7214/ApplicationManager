@@ -26,11 +26,15 @@
             tools:ignore="GoogleAppIndexingWarning">
         <activity
                 android:name="com.dertyp7214.logs.helpers.CrashReportDialog"
-                android:theme="@style/Wallpaper" />
+                android:theme="@style/Wallpaper"/>
         <activity
                 android:name=".screens.MainActivity"
                 android:label="@string/title_activity_main"
                 android:theme="@style/AppTheme.Launch.NoActionBar">
+        </activity>
+        <activity
+                android:name=".themes.ThemePreviewScreen"
+                android:theme="@style/AppTheme.Launch">
         </activity>
         <activity
                 android:name=".screens.Splash"
@@ -52,5 +56,4 @@
                     android:resource="@xml/provider_paths"/>
         </provider>
     </application>
-
 </manifest>

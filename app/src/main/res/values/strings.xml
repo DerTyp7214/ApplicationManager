@@ -64,4 +64,6 @@
     <string name="todo">TODO</string>
     <string name="menu_dev_settings">Developer Settings</string>
     <string name="dev_settings">Developer Settings</string>
+    <string name="text_developers">Developers</string>
+    <string name="text_libs">Libraries</string>
 </resources>

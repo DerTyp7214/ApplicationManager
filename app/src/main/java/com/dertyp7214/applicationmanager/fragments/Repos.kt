@@ -7,6 +7,7 @@
 
 package com.dertyp7214.applicationmanager.fragments
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
 import android.os.Bundle
@@ -28,13 +29,16 @@ class Repos : Fragment() {
     private lateinit var api: Api
     private lateinit var activity: Activity
     private var dialog: ProgressDialog? = null
+    private lateinit var v: View
 
     companion object {
+        @SuppressLint("StaticFieldLeak")
+        var instance: Repos? = null
         var triggerAsync: (query: String) -> Unit = {}
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val v = inflater.inflate(R.layout.layout_repos, container, false)
+        v = inflater.inflate(R.layout.layout_repos, container, false)
 
         activity = getActivity()!!
         activity.title = getString(R.string.repos)
@@ -42,25 +46,32 @@ class Repos : Fragment() {
         api = Api(activity)
 
         dialog = ProgressDialog.show(activity, "", "Loading Repo")
-        loadData(v)
+        loadData()
 
         triggerAsync = {
-            loadData(v, it)
+            loadData(it)
         }
 
         v.findViewById<SwipeRefreshLayout>(R.id.refresh).apply {
             setOnRefreshListener {
                 RepoLoader.getInstance(activity).loadRepoAsync()
-                loadData(v, "") {
+                loadData("") {
                     isRefreshing = false
                 }
             }
         }
 
+        instance = this
+
         return v
     }
 
-    private fun loadData(v: View, query: String = "", finished: () -> Unit = {}) {
+    override fun onStop() {
+        super.onStop()
+        instance = null
+    }
+
+    fun loadData(query: String = "", finished: () -> Unit = {}) {
         Thread {
             val apps = ArrayList<Application>()
             val updates = ArrayList<Application>()
@@ -86,7 +97,7 @@ class Repos : Fragment() {
             apps.addAll(download)
             activity.runOnUiThread {
                 if (dialog != null && dialog!!.isShowing) dialog!!.dismiss()
-                RepoAdapter(activity, v.findViewById(R.id.rv), apps)
+                RepoAdapter(this, v.findViewById(R.id.rv), apps)
                 finished()
             }
         }.start()

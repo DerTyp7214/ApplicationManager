@@ -7,17 +7,15 @@ package com.dertyp7214.applicationmanager.helpers
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import androidx.core.content.FileProvider
 import com.dertyp7214.logs.helpers.Logger
+import com.dertyp7214.preferencesplus.core.nextActivity
 import java.io.File
 import java.util.regex.Pattern
-import android.content.pm.PackageManager
-import android.content.pm.PackageInfo
-
-
-
 
 
 class Packages {
@@ -35,7 +33,7 @@ class Packages {
                                 "application/vnd.android.package-archive"
                             )
                             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                            context.startActivity(intent)
+                            context.nextActivity()!!.startActivityForResult(intent, 1337)
                         } else {
                             val intent = Intent(Intent.ACTION_VIEW)
                             intent.setDataAndType(
@@ -43,7 +41,7 @@ class Packages {
                                 "application/vnd.android.package-archive"
                             )
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                            context.startActivity(intent)
+                            context.nextActivity()!!.startActivityForResult(intent, 1337)
                         }
                     }
                 }

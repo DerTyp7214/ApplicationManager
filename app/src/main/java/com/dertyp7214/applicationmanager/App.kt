@@ -10,12 +10,20 @@ import android.app.Activity
 import android.app.Application
 import android.app.UiModeManager
 import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
+import android.content.pm.ApplicationInfo
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
+import android.os.SystemClock
+import android.util.Log
+import androidx.annotation.RequiresApi
 import androidx.core.content.edit
 import com.dertyp7214.applicationmanager.helpers.Network
 import com.dertyp7214.applicationmanager.helpers.Network.Companion.isNetworkAvailable
+import com.dertyp7214.applicationmanager.receivers.PackageReceiver
 import com.dertyp7214.applicationmanager.screens.MainActivity
 import com.dertyp7214.applicationmanager.screens.Splash
 import com.dertyp7214.logs.helpers.Logger
@@ -30,6 +38,43 @@ class App : Application() {
     companion object {
         @SuppressLint("StaticFieldLeak")
         lateinit var context: Context
+        var packages: MutableList<ApplicationInfo>? = null
+            get() {
+                if (field == null) {
+                    field = context.packageManager.getInstalledApplications(PackageManager.GET_META_DATA)
+                }
+                return field
+            }
+
+        fun reloadPackages() {
+            packages = null
+        }
+
+        fun setTheme(theme: Int) {
+            val prefs = context.getSharedPreferences("themes", Context.MODE_PRIVATE)
+            prefs.edit {
+                val themeLight = when (theme) {
+                    R.style.AppTheme_Green -> R.style.AppTheme_Green
+                    else -> R.style.AppTheme
+                }
+                val themeDark = when (theme) {
+                    R.style.AppTheme_Green -> R.style.AppTheme_Green_Dark
+                    else -> R.style.AppTheme_Dark
+                }
+                val themeLightNo = when (theme) {
+                    R.style.AppTheme_Green -> R.style.AppTheme_Green_NoActionBar
+                    else -> R.style.AppTheme
+                }
+                val themeDarkNo = when (theme) {
+                    R.style.AppTheme_Green -> R.style.AppTheme_Green_Dark_NoActionBar
+                    else -> R.style.AppTheme_Dark
+                }
+                putInt("themeLight", themeLight)
+                putInt("themeDark", themeDark)
+                putInt("themeLightNo", themeLightNo)
+                putInt("themeDarkNo", themeDarkNo)
+            }
+        }
     }
 
     override fun onCreate() {
@@ -40,6 +85,16 @@ class App : Application() {
         context = applicationContext
         Logger.init(this)
         PRDownloader.initialize(applicationContext, config)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //checkForPackageChanges()
+        } else {
+            val intentFilter = IntentFilter()
+            intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED)
+            intentFilter.addAction(Intent.ACTION_PACKAGE_INSTALL)
+            intentFilter.addDataScheme("package")
+            registerReceiver(PackageReceiver(), intentFilter)
+        }
 
         registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
@@ -65,6 +120,17 @@ class App : Application() {
             override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle?) {}
             override fun onActivityDestroyed(activity: Activity) {}
         })
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun checkForPackageChanges() {
+        Thread {
+            while (true) {
+                val packages = packageManager.getChangedPackages(SystemClock.elapsedRealtime().toInt() - 500)
+                Log.d("PACKAGES", if (packages?.packageNames != null) packages.packageNames.joinToString() else "")
+                Thread.sleep(500)
+            }
+        }.start()
     }
 
     private fun checkDarkMode() {
@@ -98,8 +164,8 @@ class App : Application() {
                     activity.window.navigationBarDividerColor = Color.LTGRAY
             }
             when (activity) {
-                is MainActivity -> activity.setTheme(if (darkMode) R.style.AppTheme_Dark_NoActionBar else R.style.AppTheme_NoActionBar)
-                !is Splash -> activity.setTheme(if (darkMode) R.style.AppTheme_Dark else R.style.AppTheme)
+                is MainActivity -> activity.setTheme(getTheme(darkMode, true))
+                !is Splash -> activity.setTheme(getTheme(darkMode, false))
                 else -> {
                     activity.window.statusBarColor = windowBackgroundDark
                     activity.setTheme(R.style.AppTheme_Splash)
@@ -107,6 +173,19 @@ class App : Application() {
             }
         } catch (e: Exception) {
         }
+    }
+
+    private fun getTheme(darkMode: Boolean, noActionBar: Boolean): Int {
+        val prefs = getSharedPreferences("themes", Context.MODE_PRIVATE)
+        return if (noActionBar)
+            if (darkMode) prefs.getInt("themeDarkNo", R.style.AppTheme_Dark_NoActionBar) else prefs.getInt(
+                "themeLightNo",
+                R.style.AppTheme_NoActionBar
+            )
+        else if (darkMode) prefs.getInt("themeDark", R.style.AppTheme_Dark) else prefs.getInt(
+            "themeLight",
+            R.style.AppTheme
+        )
     }
 
     private fun handleNetwork(activity: Activity?) {
