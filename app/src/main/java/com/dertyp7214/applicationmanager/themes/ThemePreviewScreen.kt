@@ -1,6 +1,7 @@
 package com.dertyp7214.applicationmanager.themes
 
 import android.os.Bundle
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -30,12 +31,22 @@ class ThemePreviewScreen : AppCompatActivity() {
                 )
             ),
             ThemePreview(
-                "Theme1",
+                "Theme2",
                 ThemePreview.Theme(
                     R.color.colorPrimaryGreenDark,
                     R.color.colorPrimaryGreen,
                     R.color.colorAccentGreen,
                     R.style.AppTheme_Green,
+                    true
+                )
+            ),
+            ThemePreview(
+                "Theme3",
+                ThemePreview.Theme(
+                    R.color.colorPrimaryRedDark,
+                    R.color.colorPrimaryRed,
+                    R.color.colorAccentRed,
+                    R.style.AppTheme_Red,
                     true
                 )
             )
@@ -56,10 +67,12 @@ class ThemePreviewScreen : AppCompatActivity() {
             }
 
             override fun onPageSelected(position: Int) {
-                val theme = themes[position]
-                App.setTheme(theme.theme.themeId)
             }
         })
+
+        findViewById<Button>(R.id.button).setOnClickListener {
+            App.setTheme(themes[viewPager.currentItem].theme.themeId)
+        }
     }
 
     internal inner class ViewPagerAdapter(manager: FragmentManager) : FragmentPagerAdapter(manager) {
