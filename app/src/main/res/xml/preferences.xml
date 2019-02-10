@@ -11,7 +11,7 @@
             android:title="General">
 
         <SwitchPreference
-                android:title="Use Beta"
+                android:title="@string/use_beta"
                 android:key="beta_channel"
                 android:defaultValue="false"/>
         <com.dertyp7214.logs.preferences.LogMode/>

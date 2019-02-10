@@ -7,7 +7,6 @@ package com.dertyp7214.applicationmanager.adapters
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
-import android.content.Context.MODE_PRIVATE
 import android.content.DialogInterface
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
@@ -20,6 +19,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.setPadding
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dertyp7214.applicationmanager.R
@@ -38,7 +38,7 @@ import java.io.File
 class RepoAdapter(private val fragment: Repos, recyclerView: RecyclerView, private val apps: List<Application>) :
     RecyclerView.Adapter<RepoAdapter.ViewHolder>() {
 
-    private val activity = fragment.activity!!
+    private val activity = fragment.activity !!
 
     init {
         recyclerView.layoutManager = LinearLayoutManager(activity)
@@ -65,7 +65,7 @@ class RepoAdapter(private val fragment: Repos, recyclerView: RecyclerView, priva
     @SuppressLint("SetTextI18n", "RtlHardcoded")
     override fun onBindViewHolder(holder: RepoAdapter.ViewHolder, position: Int) {
         val application = apps[position]
-        val darkMode = activity.getSharedPreferences("settings", MODE_PRIVATE).getBoolean("dark_mode", true)
+        val darkMode = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("dark_mode", true)
 
         val size = Point()
         activity.windowManager.defaultDisplay.getSize(size)
@@ -88,7 +88,7 @@ class RepoAdapter(private val fragment: Repos, recyclerView: RecyclerView, priva
                     .setMessage("Do you want to install '${application.name}' now?")
                     .setPositiveButton(R.string.install) { dialog: DialogInterface, _: Int ->
                         val path = File(Environment.getExternalStorageDirectory(), ".application_manager")
-                        if (!path.exists()) path.mkdirs()
+                        if (! path.exists()) path.mkdirs()
                         val progressDialog =
                             ProgressDialog.show(
                                 activity,
@@ -110,7 +110,7 @@ class RepoAdapter(private val fragment: Repos, recyclerView: RecyclerView, priva
                             },
                             { file: File, b: Boolean ->
                                 progressDialog.dismiss()
-                                if (!b)
+                                if (! b)
                                     Packages.install(activity, file)
                                 else
                                     Toast.makeText(
@@ -127,7 +127,7 @@ class RepoAdapter(private val fragment: Repos, recyclerView: RecyclerView, priva
                             File(Environment.getExternalStorageDirectory(), "ApplicationManager"),
                             application.name
                         )
-                        if (!path.exists()) path.mkdirs()
+                        if (! path.exists()) path.mkdirs()
                         val progressDialog =
                             ProgressDialog.show(
                                 activity,
@@ -149,7 +149,7 @@ class RepoAdapter(private val fragment: Repos, recyclerView: RecyclerView, priva
                             },
                             { _, b ->
                                 progressDialog.dismiss()
-                                if (!b)
+                                if (! b)
                                     Toast.makeText(
                                         activity,
                                         activity.getString(R.string.downloaded),

@@ -8,22 +8,16 @@ package com.dertyp7214.applicationmanager
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
-import android.app.UiModeManager
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.os.SystemClock
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.content.edit
+import androidx.preference.PreferenceManager
 import com.dertyp7214.applicationmanager.helpers.Network
 import com.dertyp7214.applicationmanager.helpers.Network.Companion.isNetworkAvailable
-import com.dertyp7214.applicationmanager.receivers.PackageReceiver
 import com.dertyp7214.applicationmanager.screens.MainActivity
 import com.dertyp7214.applicationmanager.screens.Splash
 import com.dertyp7214.logs.helpers.Logger
@@ -55,18 +49,22 @@ class App : Application() {
             prefs.edit {
                 val themeLight = when (theme) {
                     R.style.AppTheme_Green -> R.style.AppTheme_Green
+                    R.style.AppTheme_Red -> R.style.AppTheme_Red
                     else -> R.style.AppTheme
                 }
                 val themeDark = when (theme) {
                     R.style.AppTheme_Green -> R.style.AppTheme_Green_Dark
+                    R.style.AppTheme_Red -> R.style.AppTheme_Red_Dark
                     else -> R.style.AppTheme_Dark
                 }
                 val themeLightNo = when (theme) {
                     R.style.AppTheme_Green -> R.style.AppTheme_Green_NoActionBar
+                    R.style.AppTheme_Red -> R.style.AppTheme_Red_NoActionBar
                     else -> R.style.AppTheme_NoActionBar
                 }
                 val themeDarkNo = when (theme) {
                     R.style.AppTheme_Green -> R.style.AppTheme_Green_Dark_NoActionBar
+                    R.style.AppTheme_Red -> R.style.AppTheme_Red_Dark_NoActionBar
                     else -> R.style.AppTheme_Dark_NoActionBar
                 }
                 putInt("themeLight", themeLight)
@@ -85,16 +83,6 @@ class App : Application() {
         context = applicationContext
         Logger.init(this)
         PRDownloader.initialize(applicationContext, config)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //checkForPackageChanges()
-        } else {
-            val intentFilter = IntentFilter()
-            intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED)
-            intentFilter.addAction(Intent.ACTION_PACKAGE_INSTALL)
-            intentFilter.addDataScheme("package")
-            registerReceiver(PackageReceiver(), intentFilter)
-        }
 
         registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
@@ -122,29 +110,8 @@ class App : Application() {
         })
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun checkForPackageChanges() {
-        Thread {
-            while (true) {
-                val packages = packageManager.getChangedPackages(SystemClock.elapsedRealtime().toInt() - 500)
-                Log.d("PACKAGES", if (packages?.packageNames != null) packages.packageNames.joinToString() else "")
-                Thread.sleep(500)
-            }
-        }.start()
-    }
-
-    private fun checkDarkMode() {
-        getSharedPreferences("settings", Context.MODE_PRIVATE).edit {
-            putBoolean(
-                "dark_mode",
-                (getSystemService(Context.UI_MODE_SERVICE) as UiModeManager).nightMode == UiModeManager.MODE_NIGHT_YES
-            )
-        }
-    }
-
     private fun handleTheme(activity: Activity?) {
         try {
-            checkDarkMode()
             val typedArrayDark = obtainStyledAttributes(
                 R.style.AppTheme_Splash,
                 intArrayOf(android.R.attr.windowBackground)
@@ -152,14 +119,14 @@ class App : Application() {
             val windowBackgroundDark = typedArrayDark.getColor(0, Color.DKGRAY)
             typedArrayDark.recycle()
 
-            val darkMode = getSharedPreferences("settings", Context.MODE_PRIVATE).getBoolean("dark_mode", true)
+            val darkMode = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("dark_mode", true)
             if (activity is Splash || darkMode)
-                activity!!.window.navigationBarColor = windowBackgroundDark
+                activity !!.window.navigationBarColor = windowBackgroundDark
             else {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    activity!!.window.navigationBarColor = Color.parseColor("#FAFAFA")
+                    activity !!.window.navigationBarColor = Color.parseColor("#FAFAFA")
                 } else
-                    activity!!.window.navigationBarColor = Color.LTGRAY
+                    activity !!.window.navigationBarColor = Color.LTGRAY
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
                     activity.window.navigationBarDividerColor = Color.LTGRAY
             }
@@ -191,10 +158,10 @@ class App : Application() {
     private fun handleNetwork(activity: Activity?) {
         try {
             if (thread != null)
-                if (thread!!.isAlive)
-                    thread!!.interrupt()
+                if (thread !!.isAlive)
+                    thread !!.interrupt()
             thread = Thread {
-                if (!isNetworkAvailable(activity!!)) {
+                if (! isNetworkAvailable(activity !!)) {
                     try {
                         Network.disabled = true
                         activity.runOnUiThread {
@@ -218,7 +185,7 @@ class App : Application() {
                 }
                 try {
                     var last = isNetworkAvailable(activity)
-                    while (!thread!!.isInterrupted) {
+                    while (! thread !!.isInterrupted) {
                         Thread.sleep(500)
                         if (last != isNetworkAvailable(activity)) {
                             last = isNetworkAvailable(activity)
@@ -228,7 +195,7 @@ class App : Application() {
                 } catch (e: Exception) {
                 }
             }
-            thread!!.start()
+            thread !!.start()
         } catch (e: Exception) {
         }
     }

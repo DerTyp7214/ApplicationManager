@@ -56,7 +56,6 @@ class About : Fragment() {
         val scrollView: ScrollView = v.findViewById(R.id.scroll)
         OverScrollDecoratorHelper.setUpOverScroll(scrollView)
 
-
         val libraries = arrayListOf(
             Library("Android Open Source Project", "Android", "https://source.android.com/"),
             Library("Over-Scroll Decor", "EverythingMe", "https://github.com/EverythingMe/overscroll-decor"),

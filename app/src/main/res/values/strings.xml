@@ -66,4 +66,6 @@
     <string name="dev_settings">Developer Settings</string>
     <string name="text_developers">Developers</string>
     <string name="text_libs">Libraries</string>
+    <string name="use_beta">Use Beta</string>
+    <string name="dark_mode">Dark mode</string>
 </resources>

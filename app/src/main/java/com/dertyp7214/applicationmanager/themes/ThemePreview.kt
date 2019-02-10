@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2019.
+ * Created by Josua Lengwenath
+ */
+
 package com.dertyp7214.applicationmanager.themes
 
 import android.annotation.SuppressLint
@@ -46,8 +51,8 @@ class ThemePreview(private val title: String, val theme: Theme) : Fragment() {
     }
 
     data class Theme(
-        val colorPrimary: Int,
         val colorPrimaryDark: Int,
+        val colorPrimary: Int,
         val colorAccent: Int,
         val themeId: Int,
         val resourceValue: Boolean
