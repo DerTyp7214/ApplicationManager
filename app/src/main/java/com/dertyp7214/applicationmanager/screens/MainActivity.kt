@@ -10,6 +10,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
+import android.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
@@ -63,11 +64,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navView.setNavigationItemSelectedListener(this)
 
         val devSettingsItem = navView.menu.findItem(R.id.nav_dev_settings)
-        if (false && ! getSharedPreferences("dev_settings", MODE_PRIVATE).getBoolean(
-                "enabled",
-                false
-            )
-        ) // TODO: delete false
+        if (!PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dev_settings_enabled", false))
             devSettingsItem.isVisible = false
 
         toolbarElevation = toolbar.elevation
@@ -87,6 +84,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_about -> setFragment(About(), R.id.nav_about, false)
             else -> setFragment(Home(), R.id.nav_home, false)
         }
+
+        navView.setCheckedItem(intent?.extras?.getInt("fragment") ?: R.id.nav_home)
     }
 
     override fun onBackPressed() {

@@ -11,10 +11,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.dertyp7214.applicationmanager.R
 import com.dertyp7214.applicationmanager.screens.MainActivity
+import com.dertyp7214.applicationmanager.themes.ThemePreviewScreen
 
 class DevSettings : PreferenceFragmentCompat() {
 
@@ -24,6 +26,8 @@ class DevSettings : PreferenceFragmentCompat() {
         val activity = requireActivity()
 
         val darkMode: SwitchPreference = findPreference("dark_mode") as SwitchPreference
+        val devSettingsEnabled: SwitchPreference = findPreference("dev_settings_enabled") as SwitchPreference
+        val colorStyle: Preference = findPreference("color_style")
 
         darkMode.setOnPreferenceChangeListener { _, _ ->
             ValueAnimator.ofFloat(0F, 1F).apply {
@@ -38,6 +42,17 @@ class DevSettings : PreferenceFragmentCompat() {
                 }
                 start()
             }
+            true
+        }
+
+        devSettingsEnabled.setOnPreferenceChangeListener { _, _ ->
+            activity.startActivity(Intent(activity, MainActivity::class.java))
+            activity.finish()
+            true
+        }
+
+        colorStyle.setOnPreferenceClickListener {
+            startActivity(Intent(activity, ThemePreviewScreen::class.java))
             true
         }
     }

@@ -20,6 +20,7 @@ import com.dertyp7214.applicationmanager.helpers.Network
 import com.dertyp7214.applicationmanager.helpers.Network.Companion.isNetworkAvailable
 import com.dertyp7214.applicationmanager.screens.MainActivity
 import com.dertyp7214.applicationmanager.screens.Splash
+import com.dertyp7214.applicationmanager.themes.ThemePreviewScreen
 import com.dertyp7214.logs.helpers.Logger
 import com.downloader.PRDownloader
 import com.downloader.PRDownloaderConfig
@@ -132,6 +133,7 @@ class App : Application() {
             }
             when (activity) {
                 is MainActivity -> activity.setTheme(getTheme(darkMode, true))
+                is ThemePreviewScreen -> activity.setTheme(getTheme(darkMode, true))
                 !is Splash -> activity.setTheme(getTheme(darkMode, false))
                 else -> {
                     activity.window.statusBarColor = windowBackgroundDark
@@ -142,7 +144,7 @@ class App : Application() {
         }
     }
 
-    private fun getTheme(darkMode: Boolean, noActionBar: Boolean): Int {
+    fun getTheme(darkMode: Boolean, noActionBar: Boolean): Int {
         val prefs = getSharedPreferences("themes", Context.MODE_PRIVATE)
         return if (noActionBar)
             if (darkMode) prefs.getInt("themeDarkNo", R.style.AppTheme_Dark_NoActionBar) else prefs.getInt(

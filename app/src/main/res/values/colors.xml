@@ -15,7 +15,7 @@
     <color name="colorPrimaryGreenDark">#05AF02</color>
     <color name="colorAccentGreen">#D83838</color>
 
-    <color name="colorPrimaryRed">#A30000</color>
-    <color name="colorPrimaryRedDark">#7C0000</color>
+    <color name="colorPrimaryRed">#BE0000</color>
+    <color name="colorPrimaryRedDark">#920000</color>
     <color name="colorAccentRed">#00E481</color>
 </resources>

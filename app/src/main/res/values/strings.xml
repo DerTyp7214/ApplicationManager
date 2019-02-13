@@ -68,4 +68,9 @@
     <string name="text_libs">Libraries</string>
     <string name="use_beta">Use Beta</string>
     <string name="dark_mode">Dark mode</string>
+    <string name="color_style">Color Style</string>
+    <string name="already_dev">You are already a Developer.</string>
+    <string name="steps_to_dev">steps to become a Developer.</string>
+    <string name="your_now_dev">You are now a Developer</string>
+    <string name="dev_settings_enabled">Show Developer Settings</string>
 </resources>

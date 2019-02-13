@@ -6,12 +6,22 @@
 
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceCategory
+            android:key="developer"
+            android:title="Developer">
+        <SwitchPreference
+                android:title="@string/dev_settings_enabled"
+                android:key="dev_settings_enabled"
+                android:defaultValue="true"/>
+    </PreferenceCategory>
+    <PreferenceCategory
             android:key="general"
             android:title="General">
-
         <SwitchPreference
                 android:title="@string/dark_mode"
                 android:key="dark_mode"
                 android:defaultValue="false"/>
+        <Preference
+                android:title="@string/color_style"
+                android:key="color_style"/>
     </PreferenceCategory>
 </androidx.preference.PreferenceScreen>
