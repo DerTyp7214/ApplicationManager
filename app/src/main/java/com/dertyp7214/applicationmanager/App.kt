@@ -55,18 +55,22 @@ class App : Application() {
             prefs.edit {
                 val themeLight = when (theme) {
                     R.style.AppTheme_Green -> R.style.AppTheme_Green
+                    R.style.AppTheme_Red -> R.style.AppTheme_Red
                     else -> R.style.AppTheme
                 }
                 val themeDark = when (theme) {
                     R.style.AppTheme_Green -> R.style.AppTheme_Green_Dark
+                    R.style.AppTheme_Red -> R.style.AppTheme_Red_Dark
                     else -> R.style.AppTheme_Dark
                 }
                 val themeLightNo = when (theme) {
                     R.style.AppTheme_Green -> R.style.AppTheme_Green_NoActionBar
+                    R.style.AppTheme_Red -> R.style.AppTheme_Red_NoActionBar
                     else -> R.style.AppTheme_NoActionBar
                 }
                 val themeDarkNo = when (theme) {
                     R.style.AppTheme_Green -> R.style.AppTheme_Green_Dark_NoActionBar
+                    R.style.AppTheme_Red -> R.style.AppTheme_Red_Dark_NoActionBar
                     else -> R.style.AppTheme_Dark_NoActionBar
                 }
                 putInt("themeLight", themeLight)

@@ -61,11 +61,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navView.setNavigationItemSelectedListener(this)
 
         val devSettingsItem = navView.menu.findItem(R.id.nav_dev_settings)
-        if (false && !getSharedPreferences("dev_settings", MODE_PRIVATE).getBoolean(
-                "enabled",
-                false
-            )
-        ) // TODO: delete false
+        if (!getSharedPreferences("dev_settings", MODE_PRIVATE).getBoolean("enabled", false))
             devSettingsItem.isVisible = false
 
         toolbarElevation = toolbar.elevation

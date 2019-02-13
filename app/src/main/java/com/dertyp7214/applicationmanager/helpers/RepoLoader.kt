@@ -9,6 +9,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Context.MODE_PRIVATE
 import androidx.core.content.edit
+import com.dertyp7214.applicationmanager.core.loadApplications
 import com.dertyp7214.applicationmanager.props.Application
 import org.json.JSONArray
 
@@ -23,7 +24,7 @@ class RepoLoader private constructor(private val context: Context) {
         fun getInstance(context: Context): RepoLoader {
             if (instance == null)
                 instance = RepoLoader(context)
-            return instance !!
+            return instance!!
         }
     }
 
@@ -32,7 +33,9 @@ class RepoLoader private constructor(private val context: Context) {
             putBoolean("first", false)
         }
         loading = true
-        saveList("repo", JsonParser.applicationToJSON(api.loadApplications(api.getRepos(""))))
+        val list = ArrayList(api.loadApplications(api.getRepos("")))
+        list.addAll(api.getThirdPartyRepos("").loadApplications(context))
+        saveList("repo", JsonParser.applicationToJSON(list))
         loading = false
     }
 
