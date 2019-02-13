@@ -20,7 +20,7 @@
                 android:gravity="center">
             <FrameLayout
                     android:layout_width="90dp"
-                    android:layout_height="90dp">
+                    android:layout_height="90dp" android:id="@+id/icon">
 
                 <com.dertyp7214.applicationmanager.components.MaskedImageView
                         android:layout_width="match_parent"

@@ -66,4 +66,18 @@
     <string name="dev_settings">Developer Settings</string>
     <string name="text_developers">Developers</string>
     <string name="text_libs">Libraries</string>
+    <string name="use_beta">Use Beta</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="color_style">Color Style</string>
+    <string name="already_dev">You are already a Developer.</string>
+    <string name="steps_to_dev">steps to become a Developer.</string>
+    <string name="your_now_dev">You are now a Developer</string>
+    <string name="dev_settings_enabled">Show Developer Settings</string>
+    <string name="repositories">Repositories</string>
+    <string name="repo_name">Repository Name</string>
+    <string name="add">Add</string>
+    <string name="delete">Delete</string>
+    <string name="other_name">Take another Name</string>
+    <string name="empty">Please type a name</string>
+    <string name="already_registered">This Repo is already Registered</string>
 </resources>

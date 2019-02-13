@@ -1,4 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen>
+<!--
+  ~ Copyright (c) 2019.
+  ~ Created by Josua Lengwenath
+  -->
 
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+            android:key="developer"
+            android:title="Developer">
+        <SwitchPreference
+                android:title="@string/dev_settings_enabled"
+                android:key="dev_settings_enabled"
+                android:defaultValue="true"/>
+    </PreferenceCategory>
+    <PreferenceCategory
+            android:key="general"
+            android:title="General">
+        <SwitchPreference
+                android:title="@string/dark_mode"
+                android:key="dark_mode"
+                android:defaultValue="false"/>
+        <Preference
+                android:title="@string/color_style"
+                android:key="color_style"/>
+        <Preference
+                android:title="@string/repositories"
+                android:key="repos"/>
+    </PreferenceCategory>
 </androidx.preference.PreferenceScreen>

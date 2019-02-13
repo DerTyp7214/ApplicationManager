@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2019.
+ * Created by Josua Lengwenath
+ */
+
 package com.dertyp7214.applicationmanager.themes
 
 import android.annotation.SuppressLint

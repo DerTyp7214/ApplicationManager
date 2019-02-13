@@ -6,7 +6,7 @@
 package com.dertyp7214.applicationmanager.helpers
 
 import android.content.Context
-import android.preference.PreferenceManager
+import android.content.Context.MODE_PRIVATE
 import com.dertyp7214.applicationmanager.github.Release
 import com.dertyp7214.applicationmanager.github.Repo
 import com.dertyp7214.applicationmanager.helpers.Config.API_KEY
@@ -125,11 +125,11 @@ class Api(private val context: Context) {
 
     fun getThirdPartyRepos(query: String = ""): List<Repo3> {
         val repos = ArrayList<Repo3>()
-        PreferenceManager.getDefaultSharedPreferences(context).getStringSet("repos", mutableSetOf())!!.forEach {
+        JSONArray(context.getSharedPreferences("settings", MODE_PRIVATE).getString("repos", "[]")).forEach { it, _ ->
             val readJson = ReadJSON("$baseUrl/users/$it/repos").readArray()
             if (readJson.second) {
                 readJson.first.forEach { any, _ ->
-                    val repo = parseRepo3(any as JSONObject, it)
+                    val repo = parseRepo3(any as JSONObject, it as String)
                     if (repo.name.contains(query, true) || repo.name.isEmpty())
                         repos.add(repo)
                 }
@@ -172,11 +172,11 @@ class Api(private val context: Context) {
         }
     }
 
-    fun releases(repo: String, latest: Boolean = false, host: String = baseUrl): List<Release> {
+    fun releases(repo: String, latest: Boolean = false, host: String = username): List<Release> {
         val pair = if (latest)
-            ReadJSON("$host/repos/$username/$repo/releases/latest").readObject()
+            ReadJSON("$baseUrl/repos/$host/$repo/releases/latest").readObject()
         else
-            ReadJSON("$host/repos/$username/$repo/releases").readArray()
+            ReadJSON("$baseUrl/repos/$host/$repo/releases").readArray()
         return if (pair.second) {
             val releases = ArrayList<Release>()
             val first = pair.first

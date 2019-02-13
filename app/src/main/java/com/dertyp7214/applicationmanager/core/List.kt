@@ -18,13 +18,13 @@ fun List<Repo3>.loadApplications(context: Context): List<Application> {
         val author = it.repoProp.author
         val packageName = it.repoProp.id
         val description =
-            "https://raw.githubusercontent.com/$it/${it.name}/${if (it.description.isEmpty()) "master" else it.description}/README.md"
+            "https://raw.githubusercontent.com/${it.host}/${it.name}/${if (it.description.isEmpty()) "master" else it.description}/README.md"
         val descriptionShort = it.repoProp.description
         val latestChanges = renderer.render(parser.parse(release.body))
         val latestApk = release.asset
         val latestUpdate = it.parsedUpdatedAt()
         val zipUrl =
-            "${Api.github}/$it/$name/zipball/${if (it.description.isEmpty()) "master" else it.description}"
+            "${Api.github}/${it.host}/$name/zipball/${if (it.description.isEmpty()) "master" else it.description}"
         Application(
             id,
             name,

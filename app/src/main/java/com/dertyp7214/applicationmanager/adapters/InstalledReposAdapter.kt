@@ -1,7 +1,11 @@
+/*
+ * Copyright (c) 2019.
+ * Created by Josua Lengwenath
+ */
+
 package com.dertyp7214.applicationmanager.adapters
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.res.ColorStateList
@@ -15,6 +19,7 @@ import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dertyp7214.applicationmanager.R
@@ -32,7 +37,7 @@ class InstalledReposAdapter(
     private val activity = fragment.activity!!
     private val applicationInfos = HashMap<String, ApplicationInfo>()
     private val darkMode: Boolean =
-        activity.getSharedPreferences("settings", Context.MODE_PRIVATE).getBoolean("dark_mode", true)
+        PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("dark_mode", true)
     private val magiskInstalled = RootChecker.getInstance(activity.application).checkForMagisk().first
 
     init {

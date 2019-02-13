@@ -7,7 +7,6 @@ package com.dertyp7214.applicationmanager.adapters
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
-import android.content.Context.MODE_PRIVATE
 import android.content.DialogInterface
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
@@ -20,6 +19,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.setPadding
+import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dertyp7214.applicationmanager.R
@@ -65,7 +65,7 @@ class RepoAdapter(private val fragment: Repos, recyclerView: RecyclerView, priva
     @SuppressLint("SetTextI18n", "RtlHardcoded")
     override fun onBindViewHolder(holder: RepoAdapter.ViewHolder, position: Int) {
         val application = apps[position]
-        val darkMode = activity.getSharedPreferences("settings", MODE_PRIVATE).getBoolean("dark_mode", true)
+        val darkMode = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("dark_mode", true)
 
         val size = Point()
         activity.windowManager.defaultDisplay.getSize(size)

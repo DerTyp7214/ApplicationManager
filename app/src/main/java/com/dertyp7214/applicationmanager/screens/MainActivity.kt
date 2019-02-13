@@ -10,6 +10,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
+import android.preference.PreferenceManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.inputmethod.InputMethodManager
@@ -24,9 +25,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.transition.TransitionManager
 import com.dertyp7214.applicationmanager.R
+import com.dertyp7214.applicationmanager.core.setToolbarColor
 import com.dertyp7214.applicationmanager.fragments.*
 import com.dertyp7214.applicationmanager.helpers.RepoLoader
 import com.dertyp7214.logs.fragments.Logs
+import com.dertyp7214.logs.helpers.Ui.Companion.getAttrColor
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.app_bar_main.*
 import java.io.File
@@ -61,7 +64,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         navView.setNavigationItemSelectedListener(this)
 
         val devSettingsItem = navView.menu.findItem(R.id.nav_dev_settings)
-        if (!getSharedPreferences("dev_settings", MODE_PRIVATE).getBoolean("enabled", false))
+        if (!PreferenceManager.getDefaultSharedPreferences(this).getBoolean("dev_settings_enabled", false))
             devSettingsItem.isVisible = false
 
         toolbarElevation = toolbar.elevation
@@ -70,7 +73,19 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         path.deleteRecursively()
         path.mkdirs()
 
-        setFragment(Home(), R.id.nav_home)
+        toolbar.setToolbarColor(getAttrColor(this, R.attr.colorPrimary))
+
+        when (intent?.extras?.getInt("fragment")) {
+            R.id.nav_installed -> setFragment(Installed(), R.id.nav_installed, false)
+            R.id.nav_repos -> selectRepos(false)
+            R.id.nav_log -> selectLogs(false)
+            R.id.nav_settings -> setFragment(Settings(), R.id.nav_settings, false)
+            R.id.nav_dev_settings -> setFragment(DevSettings(), R.id.nav_dev_settings, false)
+            R.id.nav_about -> setFragment(About(), R.id.nav_about, false)
+            else -> setFragment(Home(), R.id.nav_home, false)
+        }
+
+        navView.setCheckedItem(intent?.extras?.getInt("fragment") ?: R.id.nav_home)
     }
 
     override fun onBackPressed() {
@@ -96,48 +111,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
                 setFragment(Installed(), R.id.nav_installed)
             }
             R.id.nav_repos -> {
-                setFragment(Repos(), R.id.nav_repos)
-                toolbar.inflateMenu(R.menu.search)
-                val search = toolbar.menu.findItem(R.id.menu_search).actionView as SearchView
-                search.apply {
-                    setOnSearchClickListener {
-                        TransitionManager.beginDelayedTransition(toolbar)
-                        toolbar.menu.findItem(R.id.menu_search).expandActionView()
-                    }
-                    setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                        override fun onQueryTextSubmit(query: String?): Boolean {
-                            if (currentFragment == R.id.nav_repos)
-                                Repos.triggerAsync(query ?: "")
-                            val view = this@MainActivity.currentFocus
-                            if (view != null) {
-                                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                                imm.hideSoftInputFromWindow(view.windowToken, 0)
-                            }
-                            return true
-                        }
-
-                        override fun onQueryTextChange(newText: String?): Boolean {
-                            if (currentFragment == R.id.nav_repos)
-                                Repos.triggerAsync(newText ?: "")
-                            return true
-                        }
-                    })
-                }
+                selectRepos()
             }
             R.id.nav_log -> {
-                title = getString(R.string.logs)
-                toolbar.elevation = 0F
-                val itemDelete =
-                    toolbar.menu.add(0, R.id.menu_delete, Menu.NONE, getString(R.string.menu_action_delete))
-                itemDelete.setIcon(R.drawable.ic_action_delete).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
-                itemDelete.setOnMenuItemClickListener {
-                    getSharedPreferences("logs", Context.MODE_PRIVATE).edit {
-                        clear()
-                    }
-                    setFragment(Logs(), R.id.nav_log, false, true)
-                    true
-                }
-                setFragment(Logs(), R.id.nav_log)
+                selectLogs()
             }
             R.id.nav_settings -> {
                 setFragment(Settings(), R.id.nav_settings)
@@ -154,7 +131,54 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         drawerLayout.closeDrawer(GravityCompat.START)
+        toolbar.setToolbarColor(getAttrColor(this, R.attr.colorPrimary))
         return true
+    }
+
+    private fun selectRepos(animated: Boolean = true) {
+        setFragment(Repos(), R.id.nav_repos, animated)
+        toolbar.inflateMenu(R.menu.search)
+        val search = toolbar.menu.findItem(R.id.menu_search).actionView as SearchView
+        search.apply {
+            setOnSearchClickListener {
+                TransitionManager.beginDelayedTransition(toolbar)
+                toolbar.menu.findItem(R.id.menu_search).expandActionView()
+            }
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    if (currentFragment == R.id.nav_repos)
+                        Repos.triggerAsync(query ?: "")
+                    val view = this@MainActivity.currentFocus
+                    if (view != null) {
+                        val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                        imm.hideSoftInputFromWindow(view.windowToken, 0)
+                    }
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    if (currentFragment == R.id.nav_repos)
+                        Repos.triggerAsync(newText ?: "")
+                    return true
+                }
+            })
+        }
+    }
+
+    private fun selectLogs(animated: Boolean = true) {
+        title = getString(R.string.logs)
+        toolbar.elevation = 0F
+        val itemDelete =
+            toolbar.menu.add(0, R.id.menu_delete, Menu.NONE, getString(R.string.menu_action_delete))
+        itemDelete.setIcon(R.drawable.ic_action_delete).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS)
+        itemDelete.setOnMenuItemClickListener {
+            getSharedPreferences("logs", Context.MODE_PRIVATE).edit {
+                clear()
+            }
+            setFragment(Logs(), R.id.nav_log, animated = false, forceReplace = true)
+            true
+        }
+        setFragment(Logs(), R.id.nav_log, animated)
     }
 
     private fun startScreen(clazz: Class<*>) {

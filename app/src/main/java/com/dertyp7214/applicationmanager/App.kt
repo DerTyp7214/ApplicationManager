@@ -8,24 +8,19 @@ package com.dertyp7214.applicationmanager
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
-import android.app.UiModeManager
 import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.os.SystemClock
-import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.content.edit
+import androidx.preference.PreferenceManager
 import com.dertyp7214.applicationmanager.helpers.Network
 import com.dertyp7214.applicationmanager.helpers.Network.Companion.isNetworkAvailable
-import com.dertyp7214.applicationmanager.receivers.PackageReceiver
 import com.dertyp7214.applicationmanager.screens.MainActivity
 import com.dertyp7214.applicationmanager.screens.Splash
+import com.dertyp7214.applicationmanager.themes.ThemePreviewScreen
 import com.dertyp7214.logs.helpers.Logger
 import com.downloader.PRDownloader
 import com.downloader.PRDownloaderConfig
@@ -90,16 +85,6 @@ class App : Application() {
         Logger.init(this)
         PRDownloader.initialize(applicationContext, config)
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //checkForPackageChanges()
-        } else {
-            val intentFilter = IntentFilter()
-            intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED)
-            intentFilter.addAction(Intent.ACTION_PACKAGE_INSTALL)
-            intentFilter.addDataScheme("package")
-            registerReceiver(PackageReceiver(), intentFilter)
-        }
-
         registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
             override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
                 context = activity
@@ -126,29 +111,8 @@ class App : Application() {
         })
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun checkForPackageChanges() {
-        Thread {
-            while (true) {
-                val packages = packageManager.getChangedPackages(SystemClock.elapsedRealtime().toInt() - 500)
-                Log.d("PACKAGES", if (packages?.packageNames != null) packages.packageNames.joinToString() else "")
-                Thread.sleep(500)
-            }
-        }.start()
-    }
-
-    private fun checkDarkMode() {
-        getSharedPreferences("settings", Context.MODE_PRIVATE).edit {
-            putBoolean(
-                "dark_mode",
-                (getSystemService(Context.UI_MODE_SERVICE) as UiModeManager).nightMode == UiModeManager.MODE_NIGHT_YES
-            )
-        }
-    }
-
     private fun handleTheme(activity: Activity?) {
         try {
-            checkDarkMode()
             val typedArrayDark = obtainStyledAttributes(
                 R.style.AppTheme_Splash,
                 intArrayOf(android.R.attr.windowBackground)
@@ -156,7 +120,7 @@ class App : Application() {
             val windowBackgroundDark = typedArrayDark.getColor(0, Color.DKGRAY)
             typedArrayDark.recycle()
 
-            val darkMode = getSharedPreferences("settings", Context.MODE_PRIVATE).getBoolean("dark_mode", true)
+            val darkMode = PreferenceManager.getDefaultSharedPreferences(activity).getBoolean("dark_mode", true)
             if (activity is Splash || darkMode)
                 activity!!.window.navigationBarColor = windowBackgroundDark
             else {
@@ -169,6 +133,7 @@ class App : Application() {
             }
             when (activity) {
                 is MainActivity -> activity.setTheme(getTheme(darkMode, true))
+                is ThemePreviewScreen -> activity.setTheme(getTheme(darkMode, true))
                 !is Splash -> activity.setTheme(getTheme(darkMode, false))
                 else -> {
                     activity.window.statusBarColor = windowBackgroundDark
@@ -179,7 +144,7 @@ class App : Application() {
         }
     }
 
-    private fun getTheme(darkMode: Boolean, noActionBar: Boolean): Int {
+    fun getTheme(darkMode: Boolean, noActionBar: Boolean): Int {
         val prefs = getSharedPreferences("themes", Context.MODE_PRIVATE)
         return if (noActionBar)
             if (darkMode) prefs.getInt("themeDarkNo", R.style.AppTheme_Dark_NoActionBar) else prefs.getInt(
