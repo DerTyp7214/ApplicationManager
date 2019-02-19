@@ -5,7 +5,6 @@
 
 <resources>
     <string name="app_name">Application Manager</string>
-    <string name="install">Install</string>
     <string name="no_thanks">No Thanks</string>
     <string name="download">Download</string>
     <string name="title_activity_main">MainActivity</string>
@@ -80,4 +79,5 @@
     <string name="other_name">Take another Name</string>
     <string name="empty">Please type a name</string>
     <string name="already_registered">This Repo is already Registered</string>
+    <string name="install">Install</string>
 </resources>
